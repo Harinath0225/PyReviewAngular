@@ -5,6 +5,7 @@ import { HistoryComponent } from './history.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'review/:id', component: ReviewComponent },
   { path: 'review', component: ReviewComponent },
   { path: 'history', component: HistoryComponent },
   { path: '**', redirectTo: '' }
