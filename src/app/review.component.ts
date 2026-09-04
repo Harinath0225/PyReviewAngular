@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReviewService, Severity } from './review.service';
 
 @Component({
@@ -98,8 +98,8 @@ import { ReviewService, Severity } from './review.service';
   `
 })
 export class ReviewComponent {
-  private readonly service = inject(ReviewService); private readonly route = inject(ActivatedRoute); readonly review = this.service.current; readonly feedback = signal<'yes' | 'no' | ''>(''); readonly selectedFinding = signal<ReturnType<typeof this.commentFor> | null>(null);
-  constructor() { const id = this.route.snapshot.paramMap.get('id'); if (id) this.service.loadById(id); }
+  private readonly service = inject(ReviewService); private readonly route = inject(ActivatedRoute); private readonly router = inject(Router); readonly review = this.service.current; readonly feedback = signal<'yes' | 'no' | ''>(''); readonly selectedFinding = signal<ReturnType<typeof this.commentFor> | null>(null);
+  constructor() { const id = this.route.snapshot.paramMap.get('id'); if (!id) { this.router.navigate(['/']); return; } this.service.loadById(id); if (!this.service.current()) this.router.navigate(['/']); }
   commentFor(line: number) { return this.review()?.comments.find(comment => comment.line === line); }
   selectFinding(note: NonNullable<ReturnType<typeof this.commentFor>>): void { this.selectedFinding.set(note); }
   sourceLine(code: string, line: number): string { return code.split('\n')[line - 1] || ''; }
