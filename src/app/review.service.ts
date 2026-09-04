@@ -2,7 +2,7 @@
 import demoReviewOutput from '../../demo/sample_review_output.json';
 
 export type ReviewInput = 'Paste code' | 'Upload file' | 'GitHub URL';
-export type Severity = 'critical' | 'warning' | 'suggestion' | 'high' | 'medium' | 'low';
+export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'suggestion' | 'warning';
 
 export interface InlineComment {
   line: number;
@@ -15,7 +15,7 @@ export interface InlineComment {
 
 interface DemoFinding {
   line: number;
-  severity: 'high' | 'medium' | 'low';
+  severity: 'critical' | 'high' | 'medium' | 'low' | 'suggestion';
   message: string;
   recommendation: string;
   evidence: string;
@@ -24,7 +24,6 @@ interface DemoFinding {
 
 interface DemoReviewResponse {
   source_code: string;
-  total_findings: number;
   findings: DemoFinding[];
   summary: string;
   owasp_context: string[];
@@ -40,6 +39,10 @@ export interface ReviewRecord {
   score: number;
   findings: number;
   criticalFindings: number;
+  highFindings: number;
+  mediumFindings: number;
+  lowFindings: number;
+  suggestions: number;
   time: string;
   code: string;
   comments: InlineComment[];
@@ -49,7 +52,7 @@ export interface ReviewRecord {
 
 @Injectable({ providedIn: 'root' })
 export class ReviewService {
-  private readonly storageKey = 'pyreview.history';
+  private readonly storageKey = 'pyreview.history.v2';
   readonly current = signal<ReviewRecord | null>(null);
   readonly history = signal<ReviewRecord[]>(this.readHistory());
 
@@ -63,6 +66,10 @@ export class ReviewService {
       replacement: finding.replacement
     }));
     const criticalFindings = mappedComments.filter(comment => comment.severity === 'critical').length;
+    const highFindings = mappedComments.filter(comment => comment.severity === 'high').length;
+    const mediumFindings = mappedComments.filter(comment => comment.severity === 'medium').length;
+    const lowFindings = mappedComments.filter(comment => comment.severity === 'low').length;
+    const suggestions = mappedComments.filter(comment => comment.severity === 'suggestion').length;
     const findings = mappedComments.length;
 
     const review: ReviewRecord = {
@@ -70,9 +77,13 @@ export class ReviewService {
       name: 'sample_code_review.py',
       source,
       language: 'Python',
-      score: 55,
+      score: Math.max(0, 100 - criticalFindings * 25 - highFindings * 15 - mediumFindings * 8 - lowFindings * 3 - suggestions * 2),
       findings,
       criticalFindings,
+      highFindings,
+      mediumFindings,
+      lowFindings,
+      suggestions,
       time: 'Just now',
       code: DEMO_REVIEW.source_code,
       comments: mappedComments,
@@ -104,7 +115,15 @@ export class ReviewService {
   private readHistory(): ReviewRecord[] {
     try {
       const stored = localStorage.getItem(this.storageKey);
-      return stored ? JSON.parse(stored) as ReviewRecord[] : [];
+      const items = stored ? JSON.parse(stored) as Partial<ReviewRecord>[] : [];
+      return items.map(item => ({
+        ...item,
+        id: item.id ?? this.createId(),
+        highFindings: item.highFindings ?? 0,
+        mediumFindings: item.mediumFindings ?? 0,
+        lowFindings: item.lowFindings ?? 0,
+        suggestions: item.suggestions ?? 0
+      } as ReviewRecord));
     } catch {
       return [];
     }
@@ -118,9 +137,7 @@ export class ReviewService {
     }
   }
 
-  private mapSeverity(severity: 'high' | 'medium' | 'low'): Severity {
-    if (severity === 'high') return 'critical';
-    if (severity === 'medium') return 'warning';
-    return 'suggestion';
+  private mapSeverity(severity: DemoFinding['severity']): Severity {
+    return severity;
   }
 }

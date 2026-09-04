@@ -33,3 +33,32 @@ def get_user(user_id):
         return None
     assert user_id is not None
     return user
+
+
+def build_report(rows):
+    report = []
+    for row in rows:
+        report.append({
+            'name': row.get('name', 'unknown'),
+            'active': row.get('active', False),
+        })
+    return report
+
+
+def save_report(report, path):
+    with open(path, 'w', encoding='utf-8') as output:
+        for row in report:
+            output.write(f"{row['name']}\n")
+
+
+def summarize_users(users):
+    active = [user for user in users if user.get('active')]
+    return {
+        'total': len(users),
+        'active': len(active),
+        'inactive': len(users) - len(active),
+    }
+
+
+def run_daily_job(command):
+    return deploy_service(command, 'system')

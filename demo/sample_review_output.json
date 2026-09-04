@@ -1,9 +1,9 @@
 {
   "review_id": "demo-pyreview-001",
   "language": "python",
-  "summary": "Five issues need attention before merge: shell execution, hardcoded credentials, assert-based validation, and production logging quality.",
-  "total_findings": 5,
-  "source_code": "import os\nimport subprocess\n\n\ndef deploy_service(command, user_id):\n    environment = os.getenv('ENVIRONMENT', 'dev')\n    if environment == 'production':\n        print('Deploying to production')\n    else:\n        print('Deploying to staging')\n    result = subprocess.run(command, shell=True, capture_output=True)\n    if result.returncode != 0:\n        raise RuntimeError('Deployment failed')\n    return result.stdout\n\n\ndef load_configuration():\n    region = os.getenv('REGION', 'us-east-1')\n    api_key = \"demo-key-replace-with-secret-manager\"\n    password = \"demo-password-change-me\"\n    return {'region': region, 'api_key': api_key}\n\n\ndef validate_request(request):\n    if not request:\n        raise ValueError('Request is required')\n    return request\n\n\ndef get_user(user_id):\n    user = find_user(user_id)\n    if user is None:\n        return None\n    assert user_id is not None\n    return user",
+  "summary": "Six findings need attention before merge: one critical injection risk, hardcoded credentials, runtime validation, logging quality, and a maintainability suggestion.",
+  "total_findings": 6,
+  "source_code": "import os\nimport subprocess\n\n\ndef deploy_service(command, user_id):\n    environment = os.getenv('ENVIRONMENT', 'dev')\n    if environment == 'production':\n        print('Deploying to production')\n    else:\n        print('Deploying to staging')\n    result = subprocess.run(command, shell=True, capture_output=True)\n    if result.returncode != 0:\n        raise RuntimeError('Deployment failed')\n    return result.stdout\n\n\ndef load_configuration():\n    region = os.getenv('REGION', 'us-east-1')\n    api_key = \"demo-key-replace-with-secret-manager\"\n    password = \"demo-password-change-me\"\n    return {'region': region, 'api_key': api_key}\n\n\ndef validate_request(request):\n    if not request:\n        raise ValueError('Request is required')\n    return request\n\n\ndef get_user(user_id):\n    user = find_user(user_id)\n    if user is None:\n        return None\n    assert user_id is not None\n    return user\n\n\ndef build_report(rows):\n    report = []\n    for row in rows:\n        report.append({\n            'name': row.get('name', 'unknown'),\n            'active': row.get('active', False),\n        })\n    return report\n\n\ndef save_report(report, path):\n    with open(path, 'w', encoding='utf-8') as output:\n        for row in report:\n            output.write(f\"{row['name']}\\n\")\n\n\ndef summarize_users(users):\n    active = [user for user in users if user.get('active')]\n    return {\n        'total': len(users),\n        'active': len(active),\n        'inactive': len(users) - len(active),\n    }\n\n\ndef run_daily_job(command):\n    return deploy_service(command, 'system')",
   "owasp_context": ["Injection", "Cryptographic Failures", "Insecure Design"],
   "findings": [
     {
@@ -18,7 +18,7 @@
     },
     {
       "line": 11,
-      "severity": "high",
+      "severity": "critical",
       "rule_id": "SEC001",
       "category": "security",
       "message": "Shell command injection risk",
@@ -45,6 +45,16 @@
       "recommendation": "Load the password from a secret manager or environment variable and rotate this exposed value.",
       "evidence": "password",
       "replacement": "password = os.environ['PASSWORD']"
+    },
+    {
+      "line": 37,
+      "severity": "suggestion",
+      "rule_id": "PY004",
+      "category": "quality",
+      "message": "Prefer a list comprehension for this simple transformation.",
+      "recommendation": "Use a comprehension when the transformation is direct and does not need incremental side effects.",
+      "evidence": "report = []",
+      "replacement": "report = [{'name': row.get('name', 'unknown'), 'active': row.get('active', False)} for row in rows]"
     },
     {
       "line": 34,

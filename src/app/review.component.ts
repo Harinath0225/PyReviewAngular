@@ -18,6 +18,7 @@ import { ReviewService, Severity } from './review.service';
             <small>CODE HEALTH</small>
             <strong>{{ item.score }}<sup>/100</sup></strong>
             <span>{{ item.criticalFindings }} critical issues caught</span>
+            <div class="review-counts"><b class="count-critical">{{ item.criticalFindings }} C</b><b class="count-high">{{ item.highFindings }} H</b><b class="count-medium">{{ item.mediumFindings }} M</b><b class="count-low">{{ item.lowFindings }} L</b><b class="count-suggestion">{{ item.suggestions }} S</b></div>
           </div>
         </div>
 
@@ -114,6 +115,6 @@ export class ReviewComponent {
     const text = `${note?.evidence ?? ''} ${note?.title ?? ''}`.toLowerCase();
     return !!note && ['key', 'password', 'secret', 'token', 'credential', 'sensitive'].some(term => text.includes(term));
   }
-  marker(severity: Severity): string { return severity === 'critical' || severity === 'high' ? '!' : severity === 'warning' || severity === 'medium' ? '▲' : '·'; }
-  severityLabel(severity: Severity): string { return severity === 'critical' || severity === 'high' ? 'critical' : severity === 'warning' || severity === 'medium' ? 'warning' : 'suggestion'; }
+  marker(severity: Severity): string { return severity === 'critical' ? '!' : severity === 'high' ? '◆' : severity === 'medium' || severity === 'warning' ? '▲' : severity === 'low' ? '•' : '·'; }
+  severityLabel(severity: Severity): string { return severity === 'warning' ? 'medium' : severity; }
 }

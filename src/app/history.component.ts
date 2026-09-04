@@ -23,6 +23,10 @@ import { ReviewService } from './review.service';
           <strong>{{ summary().critical }}</strong>
           <small>High-risk items flagged before release</small>
         </div>
+        <div class="stat-card high-card"><span class="stat-label">High</span><strong>{{ summary().high }}</strong><small>Urgent risks</small></div>
+        <div class="stat-card medium-card"><span class="stat-label">Medium</span><strong>{{ summary().medium }}</strong><small>Needs attention</small></div>
+        <div class="stat-card low-card"><span class="stat-label">Low</span><strong>{{ summary().low }}</strong><small>Minor risks</small></div>
+        <div class="stat-card suggestion-card"><span class="stat-label">Suggestions</span><strong>{{ summary().suggestions }}</strong><small>Quality improvements</small></div>
         <div class="stat-card">
           <span class="stat-label">Findings reviewed</span>
           <strong>{{ summary().findings }}</strong>
@@ -37,19 +41,19 @@ import { ReviewService } from './review.service';
 
       <div class="trend-panel">
         <div class="trend-header">
-          <div><span class="trend-kicker">Risk overview</span><strong>Critical findings by review</strong></div>
-          <span class="trend-total"><b>{{ summary().critical }}</b> critical total</span>
+          <div><span class="trend-kicker">Risk overview</span><strong>Findings by review</strong></div>
+          <span class="trend-total"><b>{{ summary().findings }}</b> total findings</span>
         </div>
-        <div class="trend-legend"><span><i class="legend-critical"></i> Critical</span><span><i class="legend-total"></i> All findings</span></div>
+        <div class="trend-legend"><span><i class="legend-critical"></i> Critical</span><span><i class="legend-high"></i> High</span><span><i class="legend-medium"></i> Medium</span><span><i class="legend-low"></i> Low</span><span><i class="legend-suggestion"></i> Suggestions</span></div>
         <div class="trend-chart">
-          <div class="trend-axis" aria-hidden="true"><span>4</span><span>3</span><span>2</span><span>1</span><span>0</span></div>
+          <div class="trend-axis" aria-hidden="true"><span>{{ summary().maxCount }}</span><span>{{ summary().halfCount }}</span><span>0</span></div>
           <div class="trend-plot">
             <div class="trend-grid" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
             <div class="trend-columns">
               @for (point of summary().trend; track point.id) {
-                <div class="trend-column" [attr.aria-label]="point.name + ': ' + point.critical + ' critical findings out of ' + point.total + ' total'">
-                  <div class="trend-values"><strong>{{ point.critical }}</strong><small>/{{ point.total }}</small></div>
-                  <div class="trend-bars"><span class="trend-bar total" [style.height.%]="point.totalHeight"></span><span class="trend-bar critical" [style.height.%]="point.criticalHeight"></span></div>
+                <div class="trend-column" [attr.aria-label]="point.name + ': ' + point.total + ' findings'">
+                  <div class="trend-values"><strong>{{ point.total }}</strong><small> findings</small></div>
+                  <div class="trend-bars"><span class="trend-bar critical" [style.height.%]="point.criticalHeight"></span><span class="trend-bar high" [style.height.%]="point.highHeight"></span><span class="trend-bar medium" [style.height.%]="point.mediumHeight"></span><span class="trend-bar low" [style.height.%]="point.lowHeight"></span><span class="trend-bar suggestion" [style.height.%]="point.suggestionHeight"></span></div>
                   <span class="trend-label">{{ point.label }}</span>
                 </div>
               }
@@ -72,7 +76,7 @@ import { ReviewService } from './review.service';
               @if (item.criticalFindings > 0) {
                 <span class="critical-pill">{{ item.criticalFindings }}</span>
               }
-              {{ item.findings }} <small>items</small>
+              {{ item.findings }} <small>items</small><span class="history-breakdown">C {{ item.criticalFindings }} · H {{ item.highFindings }} · M {{ item.mediumFindings }} · L {{ item.lowFindings }} · S {{ item.suggestions }}</span>
             </span>
             <span class="reviewed">{{ item.time }}</span>
             <span class="row-arrow">→</span>
@@ -91,6 +95,10 @@ export class HistoryComponent {
   readonly summary = computed(() => {
     const items = this.history();
     const critical = items.reduce((sum, item) => sum + item.criticalFindings, 0);
+    const high = items.reduce((sum, item) => sum + item.highFindings, 0);
+    const medium = items.reduce((sum, item) => sum + item.mediumFindings, 0);
+    const low = items.reduce((sum, item) => sum + item.lowFindings, 0);
+    const suggestions = items.reduce((sum, item) => sum + item.suggestions, 0);
     const findings = items.reduce((sum, item) => sum + item.findings, 0);
     const averageScore = Math.round(items.reduce((sum, item) => sum + item.score, 0) / Math.max(items.length, 1));
     const trendItems = items.slice(0, 5).reverse();
@@ -102,10 +110,13 @@ export class HistoryComponent {
       critical: item.criticalFindings,
       total: item.findings,
       criticalHeight: Math.max(12, (item.criticalFindings / maxFindings) * 100),
-      totalHeight: Math.max(18, (item.findings / maxFindings) * 100)
+      highHeight: Math.max(5, (item.highFindings / maxFindings) * 100),
+      mediumHeight: Math.max(5, (item.mediumFindings / maxFindings) * 100),
+      lowHeight: Math.max(5, (item.lowFindings / maxFindings) * 100),
+      suggestionHeight: Math.max(5, (item.suggestions / maxFindings) * 100)
     }));
 
-    return { critical, findings, score: averageScore, trend };
+    return { critical, high, medium, low, suggestions, findings, score: averageScore, maxCount: maxFindings, halfCount: Math.ceil(maxFindings / 2), trend };
   });
 
   open(item: Parameters<typeof this.service.load>[0]): void {
