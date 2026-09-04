@@ -1,11 +1,21 @@
 {
   "review_id": "demo-pyreview-001",
   "language": "python",
-  "summary": "Four issues need attention before merge: shell execution, hardcoded credentials, and assert-based validation.",
-  "total_findings": 4,
+  "summary": "Five issues need attention before merge: shell execution, hardcoded credentials, assert-based validation, and production logging quality.",
+  "total_findings": 5,
   "source_code": "import os\nimport subprocess\n\n\ndef deploy_service(command, user_id):\n    environment = os.getenv('ENVIRONMENT', 'dev')\n    if environment == 'production':\n        print('Deploying to production')\n    else:\n        print('Deploying to staging')\n    result = subprocess.run(command, shell=True, capture_output=True)\n    if result.returncode != 0:\n        raise RuntimeError('Deployment failed')\n    return result.stdout\n\n\ndef load_configuration():\n    region = os.getenv('REGION', 'us-east-1')\n    api_key = \"demo-key-replace-with-secret-manager\"\n    password = \"demo-password-change-me\"\n    return {'region': region, 'api_key': api_key}\n\n\ndef validate_request(request):\n    if not request:\n        raise ValueError('Request is required')\n    return request\n\n\ndef get_user(user_id):\n    user = find_user(user_id)\n    if user is None:\n        return None\n    assert user_id is not None\n    return user",
   "owasp_context": ["Injection", "Cryptographic Failures", "Insecure Design"],
   "findings": [
+    {
+      "line": 8,
+      "severity": "low",
+      "rule_id": "PY003",
+      "category": "quality",
+      "message": "Use structured logging instead of print.",
+      "recommendation": "Use the logging module so messages include levels and can be routed consistently in production.",
+      "evidence": "print",
+      "replacement": "logger.info('Deploying to production')"
+    },
     {
       "line": 11,
       "severity": "high",
