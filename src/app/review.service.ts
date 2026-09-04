@@ -74,7 +74,7 @@ export class ReviewService {
 
     const review: ReviewRecord = {
       id: this.createId(),
-      name: 'sample_code_review.py',
+      name: this.createUniqueName(),
       source,
       language: 'Python',
       score: Math.max(0, 100 - criticalFindings * 25 - highFindings * 15 - mediumFindings * 8 - lowFindings * 3 - suggestions * 2),
@@ -110,6 +110,13 @@ export class ReviewService {
   private createId(): string {
     const suffix = globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2, 10);
     return `review-${Date.now()}-${suffix}`;
+  }
+
+  private createUniqueName(): string {
+    const existingNames = new Set(this.history().map(item => item.name));
+    let count = 1;
+    while (existingNames.has(`sample_code_review-${String(count).padStart(2, '0')}.py`)) count++;
+    return `sample_code_review-${String(count).padStart(2, '0')}.py`;
   }
 
   private readHistory(): ReviewRecord[] {
