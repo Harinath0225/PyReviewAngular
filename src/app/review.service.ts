@@ -1,5 +1,6 @@
-﻿import { Injectable, signal } from '@angular/core';
-import demoReviewOutput from '../../demo/sample_review_output.json';
+﻿import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export type ReviewInput = 'Paste code' | 'Upload file' | 'GitHub URL';
 export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'suggestion' | 'warning';
@@ -13,7 +14,14 @@ export interface InlineComment {
   replacement?: string;
 }
 
-interface DemoFinding {
+export interface BusinessDocument {
+  fileName: string;
+  content: string;
+  type: 'jira' | 'specification' | 'requirements' | 'other';
+  uploadedAt?: string;
+}
+
+interface ReviewFinding {
   line: number;
   severity: 'critical' | 'high' | 'medium' | 'low' | 'suggestion';
   message: string;
@@ -22,14 +30,9 @@ interface DemoFinding {
   replacement: string;
 }
 
-interface DemoReviewResponse {
-  source_code: string;
-  findings: DemoFinding[];
-  summary: string;
-  owasp_context: string[];
-}
-
-const DEMO_REVIEW = demoReviewOutput as DemoReviewResponse;
+export interface DagEvent { node: string; event: string; timestamp: string; payload: Record<string, unknown>; }
+export interface OwaspFinding { category: string; url: string; importance: string; rule_ids: string[]; }
+export interface BusinessLogicFinding { issue: string; severity: 'critical' | 'high' | 'medium' | 'low'; context: string; alignment: string; }
 
 export interface ReviewRecord {
   id: string;
@@ -48,20 +51,66 @@ export interface ReviewRecord {
   comments: InlineComment[];
   summary?: string;
   owaspContext?: string[];
+  owaspFindings: OwaspFinding[];
+  businessDocuments?: BusinessDocument[];
+  businessLogicFindings?: BusinessLogicFinding[];
+  recommendations: string[];
+  dagEvents: DagEvent[];
 }
 
 @Injectable({ providedIn: 'root' })
 export class ReviewService {
-  private readonly storageKey = 'pyreview.history.v2';
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:8000/api/v1';
+  private readonly storageKey = 'pyreview.history.v3';
   readonly current = signal<ReviewRecord | null>(null);
   readonly history = signal<ReviewRecord[]>(this.readHistory());
+  readonly liveEvents = signal<DagEvent[]>([]);
 
-  submit(source: ReviewInput, name: string, code: string): string {
-    const mappedComments: InlineComment[] = DEMO_REVIEW.findings.map(finding => ({
-      line: finding.line,
-      severity: this.mapSeverity(finding.severity),
-      title: finding.message,
-      body: `${finding.recommendation} (${finding.evidence})`,
+  submit(source: ReviewInput, name: string, code: string, businessDocuments?: BusinessDocument[]): Observable<ReviewRecord> {
+    return new Observable(subscriber => {
+      this.liveEvents.set([]);
+      let pollHandle: ReturnType<typeof setInterval> | undefined;
+      const finish = (): void => { if (pollHandle) clearInterval(pollHandle); };
+      subscriber.add(finish);
+      const payload: Record<string, any> = { code_snippet: code, language: 'python' };
+      if (businessDocuments && businessDocuments.length > 0) {
+        payload['business_documents'] = businessDocuments;
+      }
+      this.http.post<Record<string, any>>(`${this.apiUrl}/review/start`, payload).subscribe({
+        next: started => {
+          const reviewId = String(started['review_id']);
+          pollHandle = setInterval(() => this.http.get<Record<string, any>>(`${this.apiUrl}/review/${reviewId}`).subscribe({
+            next: state => {
+              this.liveEvents.set((state['events'] ?? []) as DagEvent[]);
+              if (state['status'] === 'completed' && state['result']) {
+                finish();
+                const review = this.fromApi(state['result'], source, name, code, businessDocuments);
+                this.current.set(review);
+                const nextHistory = [review, ...this.history()];
+                this.history.set(nextHistory);
+                this.saveHistory(nextHistory);
+                subscriber.next(review);
+                subscriber.complete();
+              } else if (state['status'] === 'failed') {
+                finish();
+                subscriber.error(new Error(String(state['error'] ?? 'Review failed')));
+              }
+            },
+            error: error => { finish(); subscriber.error(error); }
+          }), 250);
+        },
+        error: error => subscriber.error(error)
+      });
+    });
+  }
+
+  private fromApi(result: Record<string, any>, source: ReviewInput, name: string, code: string, businessDocuments?: BusinessDocument[]): ReviewRecord {
+    const mappedComments: InlineComment[] = (result['findings'] ?? []).map((finding: ReviewFinding) => ({
+      line: Number(finding.line ?? 1),
+      severity: this.mapSeverity(String(finding.severity ?? 'low')),
+      title: String(finding.message ?? 'Issue detected'),
+      body: `${finding.recommendation ?? 'Review this finding.'}${finding.evidence ? ` (${finding.evidence})` : ''}`,
       evidence: finding.evidence,
       replacement: finding.replacement
     }));
@@ -73,8 +122,8 @@ export class ReviewService {
     const findings = mappedComments.length;
 
     const review: ReviewRecord = {
-      id: this.createId(),
-      name: this.createUniqueName(),
+      id: String(result['review_id'] ?? this.createId()),
+      name: name || 'pasted-snippet.py',
       source,
       language: 'Python',
       score: Math.max(0, 100 - criticalFindings * 25 - highFindings * 15 - mediumFindings * 8 - lowFindings * 3 - suggestions * 2),
@@ -85,17 +134,17 @@ export class ReviewService {
       lowFindings,
       suggestions,
       time: 'Just now',
-      code: DEMO_REVIEW.source_code,
+      code: String(result['source_code'] ?? code),
       comments: mappedComments,
-      summary: DEMO_REVIEW.summary,
-      owaspContext: DEMO_REVIEW.owasp_context
+      summary: String(result['summary'] ?? 'Review completed.'),
+      owaspContext: (result['owasp_context'] ?? []).map(String),
+      owaspFindings: (result['owasp_findings'] ?? []) as OwaspFinding[],
+      businessDocuments: businessDocuments,
+      businessLogicFindings: (result['business_logic_findings'] ?? []) as BusinessLogicFinding[],
+      recommendations: (result['recommendations'] ?? []).map(String),
+      dagEvents: (result['dag_events'] ?? []) as DagEvent[]
     };
-
-    this.current.set(review);
-    const nextHistory = [review, ...this.history()];
-    this.history.set(nextHistory);
-    this.saveHistory(nextHistory);
-    return review.id;
+    return review;
   }
 
   load(review: ReviewRecord): void {
@@ -105,6 +154,10 @@ export class ReviewService {
   loadById(id: string): void {
     const review = this.history().find(item => item.id === id);
     this.current.set(review ?? null);
+  }
+
+  submitFeedback(reviewId: string, rating: 'helpful' | 'needs_work', comment: string): Observable<unknown> {
+    return this.http.post(`${this.apiUrl}/review/${reviewId}/feedback`, { rating, comment });
   }
 
   private createId(): string {
@@ -129,7 +182,10 @@ export class ReviewService {
         highFindings: item.highFindings ?? 0,
         mediumFindings: item.mediumFindings ?? 0,
         lowFindings: item.lowFindings ?? 0,
-        suggestions: item.suggestions ?? 0
+        suggestions: item.suggestions ?? 0,
+        owaspFindings: item.owaspFindings ?? [],
+        recommendations: item.recommendations ?? [],
+        dagEvents: item.dagEvents ?? []
       } as ReviewRecord));
     } catch {
       return [];
@@ -144,7 +200,10 @@ export class ReviewService {
     }
   }
 
-  private mapSeverity(severity: DemoFinding['severity']): Severity {
-    return severity;
+  private mapSeverity(severity: string): Severity {
+    if (severity === 'major' || severity === 'error') return 'high';
+    if (severity === 'minor') return 'medium';
+    if (severity === 'info') return 'suggestion';
+    return severity as Severity;
   }
 }
