@@ -66,26 +66,31 @@ export class ReviewService {
   readonly current = signal<ReviewRecord | null>(null);
   readonly history = signal<ReviewRecord[]>(this.readHistory());
   readonly liveEvents = signal<DagEvent[]>([]);
+  readonly activeReviewId = signal<string | null>(null);
 
-  submit(source: ReviewInput, name: string, code: string, businessDocuments?: BusinessDocument[]): Observable<ReviewRecord> {
+  submit(source: ReviewInput, name: string, code: string, language = 'python', businessDocuments?: BusinessDocument[], onStarted?: (reviewId: string) => void): Observable<ReviewRecord> {
     return new Observable(subscriber => {
       this.liveEvents.set([]);
       let pollHandle: ReturnType<typeof setInterval> | undefined;
       const finish = (): void => { if (pollHandle) clearInterval(pollHandle); };
       subscriber.add(finish);
-      const payload: Record<string, any> = { code_snippet: code, language: 'python' };
+      const payload: Record<string, any> = { code_snippet: code, language };
       if (businessDocuments && businessDocuments.length > 0) {
         payload['business_documents'] = businessDocuments;
       }
       this.http.post<Record<string, any>>(`${this.apiUrl}/review/start`, payload).subscribe({
         next: started => {
           const reviewId = String(started['review_id']);
+          this.current.set(null);
+          this.activeReviewId.set(reviewId);
+          onStarted?.(reviewId);
           pollHandle = setInterval(() => this.http.get<Record<string, any>>(`${this.apiUrl}/review/${reviewId}`).subscribe({
             next: state => {
               this.liveEvents.set((state['events'] ?? []) as DagEvent[]);
               if (state['status'] === 'completed' && state['result']) {
                 finish();
-                const review = this.fromApi(state['result'], source, name, code, businessDocuments);
+                this.activeReviewId.set(null);
+                const review = this.fromApi(state['result'], source, name, code, language, businessDocuments);
                 this.current.set(review);
                 const nextHistory = [review, ...this.history()];
                 this.history.set(nextHistory);
@@ -94,6 +99,7 @@ export class ReviewService {
                 subscriber.complete();
               } else if (state['status'] === 'failed') {
                 finish();
+                this.activeReviewId.set(null);
                 subscriber.error(new Error(String(state['error'] ?? 'Review failed')));
               }
             },
@@ -105,7 +111,7 @@ export class ReviewService {
     });
   }
 
-  private fromApi(result: Record<string, any>, source: ReviewInput, name: string, code: string, businessDocuments?: BusinessDocument[]): ReviewRecord {
+  private fromApi(result: Record<string, any>, source: ReviewInput, name: string, code: string, language: string, businessDocuments?: BusinessDocument[]): ReviewRecord {
     const mappedComments: InlineComment[] = (result['findings'] ?? []).map((finding: ReviewFinding) => ({
       line: Number(finding.line ?? 1),
       severity: this.mapSeverity(String(finding.severity ?? 'low')),
@@ -125,7 +131,7 @@ export class ReviewService {
       id: String(result['review_id'] ?? this.createId()),
       name: name || 'pasted-snippet.py',
       source,
-      language: 'Python',
+      language: this.displayLanguage(String(result['language'] ?? language)),
       score: Math.max(0, 100 - criticalFindings * 25 - highFindings * 15 - mediumFindings * 8 - lowFindings * 3 - suggestions * 2),
       findings,
       criticalFindings,
@@ -205,5 +211,9 @@ export class ReviewService {
     if (severity === 'minor') return 'medium';
     if (severity === 'info') return 'suggestion';
     return severity as Severity;
+  }
+
+  private displayLanguage(language: string): string {
+    return language.charAt(0).toUpperCase() + language.slice(1).toLowerCase();
   }
 }

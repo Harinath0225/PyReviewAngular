@@ -32,9 +32,9 @@ import { ReviewService } from './review.service';
           <strong>{{ summary().findings }}</strong>
           <small>Questions, risks, and quality gaps</small>
         </div>
-        <div class="stat-card">
-          <span class="stat-label">Avg. code health</span>
-          <strong>{{ summary().score }}<em>/100</em></strong>
+        <div class="stat-card findings-total-card">
+          <span class="stat-label">Total findings</span>
+          <strong>{{ summary().findings }}</strong>
           <small>Across your review history</small>
         </div>
       </div>
@@ -63,15 +63,15 @@ import { ReviewService } from './review.service';
       </div>
 
       <div class="history-table">
-        <div class="table-head"><span>FILE / SOURCE</span><span>REVIEW ID</span><span>HEALTH</span><span>FINDINGS</span><span>REVIEWED</span><span></span></div>
+        <div class="table-head"><span>FILE / SOURCE</span><span>REVIEW ID</span><span>SEVERITY</span><span>FINDINGS</span><span>REVIEWED</span><span></span></div>
         @for (item of history(); track item.id) {
           <a class="history-row" [routerLink]="['/review', item.id]" (click)="open(item)">
             <div class="file-cell">
               <span class="file-icon">PY</span>
-              <span><b>{{ item.name }}</b><small>{{ item.source }}</small></span>
+              <span><b>{{ item.name }}</b><small>{{ item.language }} · {{ item.source }}</small></span>
             </div>
             <span class="review-id">{{ item.id }}</span>
-            <strong class="table-score" [class.high]="item.score > 85">{{ item.score }}<small>/100</small></strong>
+            <span class="history-severity"><b class="count-critical">{{ item.criticalFindings }} C</b><b class="count-high">{{ item.highFindings }} H</b><b class="count-medium">{{ item.mediumFindings }} M</b></span>
             <span class="finding-count">
               @if (item.criticalFindings > 0) {
                 <span class="critical-pill">{{ item.criticalFindings }}</span>
@@ -100,7 +100,6 @@ export class HistoryComponent {
     const low = items.reduce((sum, item) => sum + item.lowFindings, 0);
     const suggestions = items.reduce((sum, item) => sum + item.suggestions, 0);
     const findings = items.reduce((sum, item) => sum + item.findings, 0);
-    const averageScore = Math.round(items.reduce((sum, item) => sum + item.score, 0) / Math.max(items.length, 1));
     const trendItems = items.slice(0, 5).reverse();
     const maxFindings = Math.max(...trendItems.map(item => item.findings), 1);
     const trend = trendItems.map(item => ({
@@ -116,7 +115,7 @@ export class HistoryComponent {
       suggestionHeight: Math.max(5, (item.suggestions / maxFindings) * 100)
     }));
 
-    return { critical, high, medium, low, suggestions, findings, score: averageScore, maxCount: maxFindings, halfCount: Math.ceil(maxFindings / 2), trend };
+    return { critical, high, medium, low, suggestions, findings, maxCount: maxFindings, halfCount: Math.ceil(maxFindings / 2), trend };
   });
 
   open(item: Parameters<typeof this.service.load>[0]): void {

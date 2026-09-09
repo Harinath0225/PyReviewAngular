@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnDestroy, ViewChild, ElementRef, effect } from '@angular/core';
+import { Component, computed, inject, signal, OnDestroy, ViewChild, ElementRef, effect } from '@angular/core';
 import { SlicePipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReviewService, Severity } from './review.service';
@@ -10,6 +10,15 @@ interface WorkflowNode {
   id: string;
   label: string;
   detail: string;
+  icon: string;
+}
+interface GuidanceCard {
+  severity: string;
+  line: number | null;
+  body: string;
+  blocking: boolean | null;
+  codeLine: string;
+  replacement: string;
 }
 
 @Component({
@@ -22,14 +31,9 @@ interface WorkflowNode {
           <div>
             <a routerLink="/" class="back">← New review</a>
             <h1>{{ item.name }}</h1>
-            <div class="meta"><span class="python-badge">PY</span> Python <span>·</span> {{ item.source }} <span>·</span> {{ item.time }} <span>·</span> ID {{ item.id }}</div>
+            <div class="meta"><span class="python-badge">{{ item.language.slice(0, 2).toUpperCase() }}</span> {{ item.language }} <span>·</span> {{ item.source }} <span>·</span> {{ item.time }} <span>·</span> ID {{ item.id }}</div>
           </div>
-          <div class="score">
-            <small>CODE HEALTH</small>
-            <strong>{{ item.score }}<sup>/100</sup></strong>
-            <span>{{ item.criticalFindings }} critical issues caught</span>
-            <div class="review-counts"><b class="count-critical">{{ item.criticalFindings }} C</b><b class="count-high">{{ item.highFindings }} H</b><b class="count-medium">{{ item.mediumFindings }} M</b><b class="count-low">{{ item.lowFindings }} L</b><b class="count-suggestion">{{ item.suggestions }} S</b></div>
-          </div>
+          <div class="severity-summary" aria-label="Review severity counts"><span class="severity-summary-label">FINDINGS BY SEVERITY</span><strong>{{ item.findings }} findings</strong><div class="review-counts"><b class="count-critical">{{ item.criticalFindings }} C</b><b class="count-high">{{ item.highFindings }} H</b><b class="count-medium">{{ item.mediumFindings }} M</b><b class="count-low">{{ item.lowFindings }} L</b><b class="count-suggestion">{{ item.suggestions }} S</b></div></div>
         </div>
 
         <div class="summary-banner">
@@ -45,21 +49,17 @@ interface WorkflowNode {
         <section class="dag-panel">
           <div class="dag-heading"><div><span class="panel-kicker">LIVE ORCHESTRATION</span><h2>Review execution</h2><p>Each stage begins after the preceding stage completes.</p></div><span>{{ workflowEvents(item).length }} events</span></div>
           <div class="workflow-legend"><span><i class="legend-running"></i>active</span><span><i class="legend-complete"></i>complete</span><span><i class="legend-pending"></i>waiting</span></div>
-          <div class="workflow-lane" #workflowLane role="img" aria-label="Sequential agentic review workflow">
+          <div class="workflow-lane" #workflowLane role="list" aria-label="Sequential agentic review workflow">
             @for (node of workflowNodes; track node.id) {
-              <button class="workflow-node" [class]="workflowStatus(node.id, workflowEvents(item))" [class.selected]="selectedWorkflowNode() === node.id" (click)="selectedWorkflowNode.set(selectedWorkflowNode() === node.id ? '' : node.id)">
-                <span class="workflow-node-top"><i></i><b>{{ node.label }}</b><em>{{ workflowStatus(node.id, workflowEvents(item)) }}</em></span>
-                <strong>{{ node.detail }}</strong>
-                <small>{{ latestEvent(node.id, workflowEvents(item)) }}</small>
+              <button class="workflow-node" [class]="workflowStatus(node.id, workflowEvents(item))" [class.selected]="selectedWorkflowNode() === node.id" [disabled]="workflowStatus(node.id, workflowEvents(item)) === 'pending'" [attr.aria-label]="node.label + ': ' + workflowStatus(node.id, workflowEvents(item))" (click)="selectedWorkflowNode.set(selectedWorkflowNode() === node.id ? '' : node.id)">
+                <i class="material-symbols-outlined workflow-icon">{{ node.icon }}</i><b>{{ node.label }}</b><span class="workflow-tooltip"><strong>{{ node.detail }}</strong><small>{{ latestEvent(node.id, workflowEvents(item)) }}</small><em>{{ statusLabel(workflowStatus(node.id, workflowEvents(item))) }}</em></span>
               </button>
-              @if (!$last) { <span class="workflow-connector" [class.active]="workflowStatus(node.id, workflowEvents(item)) === 'completed'"><i></i></span> }
+              @if (!$last) { <span class="workflow-connector" [class.active]="workflowStatus(node.id, workflowEvents(item)) === 'completed'" [class.flowing]="workflowStatus(node.id, workflowEvents(item)) === 'running'"><i></i></span> }
             }
           </div>
-          <div class="workflow-log">
-            <div class="workflow-log-head"><span>LIVE EVENT LOG</span><button (click)="selectedWorkflowNode.set('')">All events</button></div>
-            @for (event of visibleWorkflowEvents(item); track $index) {
-              <div class="workflow-log-row"><time>{{ event.timestamp | slice:11:19 }}</time><b>{{ event.node.replaceAll('_', ' ') }}</b><span>{{ event.event.replaceAll('_', ' ') }}</span></div>
-            }
+          <div class="workflow-log" [class.expanded]="workflowLogExpanded()">
+            <button type="button" class="workflow-log-toggle" [attr.aria-expanded]="workflowLogExpanded()" (click)="toggleWorkflowLog()"><span><i class="material-symbols-outlined">terminal</i> LIVE EVENT LOG</span><b>{{ workflowLogExpanded() ? 'Hide details' : 'Show details' }} <i class="material-symbols-outlined">{{ workflowLogExpanded() ? 'expand_less' : 'expand_more' }}</i></b></button>
+            @if (workflowLogExpanded()) { <div class="workflow-log-body"><div class="workflow-log-head"><span>EVENT STREAM</span><button type="button" (click)="selectedWorkflowNode.set('')">All events</button></div>@for (event of visibleWorkflowEvents(item); track $index) { <div class="workflow-log-row"><time>{{ event.timestamp | slice:11:19 }}</time><b>{{ event.node.replaceAll('_', ' ') }}</b><span>{{ event.event.replaceAll('_', ' ') }}</span></div> }</div> }
           </div>
         </section>
 
@@ -119,9 +119,16 @@ interface WorkflowNode {
 
         <section class="senior-guidance">
           <div><span class="panel-kicker">SENIOR DEVELOPER GUIDANCE</span><h2>Recommended next actions</h2></div>
-          <ol>
-            @for (recommendation of item.recommendations; track recommendation) { <li>{{ recommendation }}</li> }
-            @empty { <li>Apply the suggested replacement, add a regression test, and rerun the review before merge.</li> }
+          <ol class="guidance-list">
+            @for (recommendation of item.recommendations; track recommendation) {
+              @let guidance = recommendationDetails(item, recommendation);
+              <li class="guidance-item" [class.code-suggestion]="guidance.codeLine && guidance.replacement" [class]="guidance.severity.toLowerCase()">
+                <div class="guidance-meta"><span class="guidance-severity">{{ guidance.severity }}</span>@if (guidance.line) { <span>line {{ guidance.line }}</span> } @if (guidance.blocking !== null) { <span class="guidance-blocking">{{ guidance.blocking ? 'PR blocking' : 'Suggested' }}</span> }</div>
+                <p>{{ guidance.body }}</p>
+                @if (guidance.codeLine && guidance.replacement) { <div class="guidance-diff"><div class="guidance-diff-line removed"><span>−</span><code>{{ guidance.codeLine }}</code></div><div class="guidance-diff-line added"><span>+</span><code>{{ guidance.replacement }}</code></div></div> }
+              </li>
+            }
+            @empty { <li class="guidance-item"><p>Apply the suggested replacement, add a regression test, and rerun the review before merge.</p></li> }
           </ol>
           @if (item.owaspFindings.length) { <div class="owasp-links"><span>OWASP tool results</span>@for (finding of item.owaspFindings; track finding.category) { <a [href]="finding.url" target="_blank" rel="noopener">{{ finding.category }} <small>{{ finding.importance }}</small></a> }</div> }
         </section>
@@ -169,37 +176,46 @@ interface WorkflowNode {
           @if (feedbackSent()) { <em>Feedback recorded for future review improvements.</em> }
         </div>
       </section>
+    } @else if (isLoading()) {
+      <section class="page review-execution-page" aria-live="polite">
+        <div class="review-execution-heading"><div><a routerLink="/" class="back">← New review</a><span class="panel-kicker">PYREVIEW / LIVE ORCHESTRATION</span><h1>Review execution</h1><p>{{ loadingStageText() }}</p></div><span class="loading-event-count">{{ service.liveEvents().length }} events</span></div>
+        <div class="loading-progress-rule"><span [style.width.%]="loadingProgress()"></span></div>
+        <div class="loading-workflow review-route-workflow" role="list">@for (node of workflowNodes; track node.id; let last = $last) { <div class="loading-stage" [class]="workflowStatus(node.id, workflowEventsForLoading())" role="listitem"><i class="material-symbols-outlined">{{ node.icon }}</i><b>{{ node.label }}</b><small>{{ statusLabel(workflowStatus(node.id, workflowEventsForLoading())) }}</small></div>@if (!last) { <span class="loading-connector" [class.completed]="workflowStatus(node.id, workflowEventsForLoading()) === 'completed'"></span> } }</div>
+        <div class="loading-current"><i class="material-symbols-outlined">sync</i><span>Working through the review pipeline</span></div>
+      </section>
     } @else {
       <section class="page empty-state"><h1>No review yet.</h1><a routerLink="/">Start a new review →</a></section>
     }
   `
 })
 export class ReviewComponent implements OnDestroy {
-  private readonly service = inject(ReviewService);
+  readonly service = inject(ReviewService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroy$ = new Subject<void>();
   readonly review = this.service.current;
+  readonly isLoading = computed(() => this.service.activeReviewId() === this.route.snapshot.paramMap.get('id'));
   readonly feedback = signal<'helpful' | 'needs_work' | ''>('');
   readonly feedbackSent = signal(false);
   readonly selectedFinding = signal<ReturnType<typeof this.commentFor> | null>(null);
   readonly selectedWorkflowNode = signal('');
+  readonly workflowLogExpanded = signal(false);
   readonly workflowNodes: WorkflowNode[] = [
-    { id: 'orchestrator', label: 'Orchestrator', detail: 'Pipeline control' },
-    { id: 'deterministic_ast', label: 'Deterministic AST', detail: 'Static parsing' },
-    { id: 'ruff', label: 'Ruff', detail: 'Lint security checks' },
-    { id: 'rag', label: 'Tool call: RAG', detail: 'History retrieval' },
-    { id: 'owasp', label: 'OWASP tool', detail: 'Category + links' },
-    { id: 'llm_model', label: 'LLM model', detail: 'Reasoning and fixes' },
-    { id: 'pull_request', label: 'PR review ready', detail: 'Ready to publish' }
+    { id: 'orchestrator', label: 'Orchestrator', detail: 'Pipeline control', icon: 'account_tree' },
+    { id: 'deterministic_ast', label: 'Deterministic AST', detail: 'Static parsing', icon: 'code' },
+    { id: 'ruff', label: 'Ruff', detail: 'Lint security checks', icon: 'rule' },
+    { id: 'rag', label: 'Tool call: RAG', detail: 'History retrieval', icon: 'database_search' },
+    { id: 'owasp', label: 'OWASP tool', detail: 'Category + links', icon: 'shield' },
+    { id: 'llm_model', label: 'LLM model', detail: 'Reasoning and fixes', icon: 'psychology' },
+    { id: 'pull_request', label: 'PR review ready', detail: 'Ready to publish', icon: 'publish' }
   ];
   @ViewChild('workflowLane') workflowLane: ElementRef | undefined;
 
   constructor() { 
     const id = this.route.snapshot.paramMap.get('id'); 
-    if (!id) { this.router.navigate(['/']); return; } 
+    if (!id) { this.router.navigate(['/history']); return; } 
     this.service.loadById(id); 
-    if (!this.service.current()) this.router.navigate(['/']); 
+    if (!this.service.current() && !this.isLoading()) this.router.navigate(['/history']); 
     
     // Watch for running stage changes and auto-scroll
     effect(() => {
@@ -226,6 +242,15 @@ export class ReviewComponent implements OnDestroy {
   }
   marker(severity: Severity): string { return severity === 'critical' ? '!' : severity === 'high' ? '◆' : severity === 'medium' || severity === 'warning' ? '▲' : severity === 'low' ? '•' : '·'; }
   severityLabel(severity: Severity): string { return severity === 'warning' ? 'medium' : severity; }
+  recommendationDetails(item: { code: string; comments: Array<{ line: number; replacement?: string }> }, raw: string): GuidanceCard {
+    const match = raw.match(/^\s*###\s+\*\*\[([^\]]+)\]\s+\(([^)]+)\)\*\*\s+Line\s+(\d+)\s*\n?([\s\S]*?)(?:\s+PR Blocking:\s*(Yes|No)\.)?\s*$/i);
+    const severity = match?.[1] ?? 'Recommendation';
+    const line = match ? Number(match[3]) : null;
+    const blocking = match?.[5] ? match[5].toLowerCase() === 'yes' : null;
+    const body = (match?.[4] ?? raw).replace(/^\*\*|\*\*$/g, '').trim();
+    const finding = line ? item.comments.find(comment => comment.line === line) : undefined;
+    return { severity, line, body, blocking, codeLine: line ? this.sourceLine(item.code, line) : '', replacement: finding?.replacement ?? '' };
+  }
   workflowEvents(item: { dagEvents: import('./review.service').DagEvent[] }): import('./review.service').DagEvent[] { return this.service.liveEvents().length ? this.service.liveEvents() : item.dagEvents; }
   workflowStatus(node: string, events: import('./review.service').DagEvent[]): WorkflowStatus {
     const stageIndex = this.workflowNodes.findIndex(item => item.id === node);
@@ -233,6 +258,19 @@ export class ReviewComponent implements OnDestroy {
     if (this.isStageCompleted(node, events)) return 'completed';
     const activeIndex = this.workflowNodes.findIndex(item => this.isStageStarted(item.id, events) && !this.isStageCompleted(item.id, events));
     return activeIndex === stageIndex ? 'running' : 'pending';
+  }
+  statusLabel(status: WorkflowStatus): string { return status === 'running' ? 'active' : status === 'completed' ? 'done' : 'waiting'; }
+  toggleWorkflowLog(): void { this.workflowLogExpanded.update(expanded => !expanded); }
+  workflowEventsForLoading(): import('./review.service').DagEvent[] { return this.service.liveEvents(); }
+  loadingStageText(): string {
+    const active = this.workflowNodes.find(node => this.workflowStatus(node.id, this.workflowEventsForLoading()) === 'running');
+    return active ? `${active.label} is in progress...` : 'Preparing the review pipeline...';
+  }
+  loadingProgress(): number {
+    const events = this.workflowEventsForLoading();
+    const completed = this.workflowNodes.filter(node => this.workflowStatus(node.id, events) === 'completed').length;
+    const running = this.workflowNodes.some(node => this.workflowStatus(node.id, events) === 'running') ? 0.5 : 0;
+    return ((completed + running) / this.workflowNodes.length) * 100;
   }
   latestEvent(node: string, events: import('./review.service').DagEvent[]): string { return this.stageEvents(node, events).at(-1)?.event.replaceAll('_', ' ') ?? 'waiting for upstream'; }
   visibleWorkflowEvents(item: { dagEvents: import('./review.service').DagEvent[] }): import('./review.service').DagEvent[] { const events = this.workflowEvents(item); return this.selectedWorkflowNode() ? this.stageEvents(this.selectedWorkflowNode(), events) : events; }
