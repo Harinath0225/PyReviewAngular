@@ -423,3 +423,43 @@ body[data-theme='light'] .review-page .guidance-item.suggestion .guidance-severi
 body[data-theme='light'] .review-page .guidance-diff-line.added { border-top-color:#dce5f6; background:#edf2ff; color:#3150a6; }
 body[data-theme='light'] .review-page .added pre { background:#edf2ff; color:#3150a6; }
 body[data-theme='light'] .review-page .business-finding .severity-badge { background:#315efb; color:#fff; }
+
+/* OWASP security context: elevated, readable, and clearly actionable. */
+.review-page .owasp-links { grid-column:1 / -1; display:block; margin-top:8px; padding:20px 0 0; border-top:1px solid #dbe4f3; }
+.review-page .owasp-heading { display:flex; align-items:center; gap:13px; padding:15px 17px; border:1px solid #c9d8ff; border-radius:11px; background:linear-gradient(105deg,#eef3ff,#faf9ff); }
+.review-page .owasp-heading > i { display:grid; flex:0 0 auto; place-items:center; width:38px; height:38px; border:1px solid #b9cdfb; border-radius:10px; background:#fff; color:#315efb; box-shadow:0 5px 14px rgba(49,94,251,.12); font-size:21px; }
+.review-page .owasp-heading > div { display:flex; min-width:0; flex:1; flex-direction:column; gap:4px; }
+.review-page .owasp-heading span { color:#315efb; font:700 9px 'Courier New'; letter-spacing:1.2px; }
+.review-page .owasp-heading strong { color:#172033; font:600 15px 'Space Grotesk','Segoe UI',sans-serif; }
+.review-page .owasp-heading small { color:#68758b; font-size:11px; }
+.review-page .owasp-heading > b { padding:6px 8px; border:1px solid #c9d8ff; border-radius:999px; color:#315efb; background:#fff; font:10px 'Courier New'; white-space:nowrap; }
+.review-page .owasp-card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:9px; margin-top:12px; }
+.review-page .owasp-card-grid a { display:block; min-width:0; padding:12px 13px; border:1px solid #d6e1f4; border-radius:9px; background:#fff; color:#315efb; box-shadow:0 4px 12px rgba(36,55,90,.04); transition:border-color .2s,box-shadow .2s,transform .2s; }
+.review-page .owasp-card-grid a:hover { border-color:#7e9df0; box-shadow:0 8px 20px rgba(49,94,251,.12); transform:translateY(-1px); }
+.review-page .owasp-card-top { display:flex; align-items:center; gap:7px; min-width:0; }
+.review-page .owasp-card-top i { flex:0 0 auto; font-size:15px; } .review-page .owasp-card-top b { overflow:hidden; font:11px 'Courier New'; text-overflow:ellipsis; white-space:nowrap; }
+.review-page .owasp-card-grid a > small { display:block; overflow:hidden; margin-top:8px; color:#68758b; font-size:10px; text-overflow:ellipsis; white-space:nowrap; }
+@media(max-width:700px) { .review-page .owasp-heading { align-items:flex-start; flex-wrap:wrap; } .review-page .owasp-heading > b { margin-left:51px; } .review-page .owasp-card-grid { grid-template-columns:1fr; } }
+
+/* Keep remediation guidance and security context balanced as two readable cards. */
+.review-page .senior-guidance { grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:start; gap:24px; padding:24px; }
+.review-page .senior-guidance > div:first-child { grid-column:1; grid-row:1; }
+.review-page .senior-guidance > .guidance-list { grid-column:1; grid-row:2; }
+.review-page .senior-guidance > .owasp-links { grid-column:2; grid-row:1 / span 2; min-width:0; height:100%; margin:0; padding:0 0 0 24px; border-top:0; border-left:1px solid #dbe4f3; }
+.review-page .senior-guidance > .owasp-links { padding:20px 18px 18px 24px; border:1px solid #b9cdfb; border-left:4px solid #315efb; border-radius:12px; background:linear-gradient(145deg,#f1f5ff,#fbfaff); box-shadow:0 10px 24px rgba(49,94,251,.08); }
+.review-page .owasp-heading { height:auto; padding:0 0 15px; border:0; background:transparent; }
+.review-page .owasp-heading > i { width:42px; height:42px; background:#315efb; color:#fff; box-shadow:0 7px 16px rgba(49,94,251,.24); }
+.review-page .owasp-heading strong { font-size:17px; }
+.review-page .owasp-heading span { font-size:10px; }
+.review-page .owasp-card-grid { padding-top:14px; border-top:1px solid #d6e1f4; }
+.review-page .owasp-card-grid { grid-template-columns:1fr; }
+@media(max-width:800px) { .review-page .senior-guidance { grid-template-columns:1fr; } .review-page .senior-guidance > div:first-child,.review-page .senior-guidance > .guidance-list,.review-page .senior-guidance > .owasp-links { grid-column:1; grid-row:auto; } .review-page .senior-guidance > .owasp-links { margin-top:8px; padding:20px 18px 18px 20px; border-top:1px solid #b9cdfb; border-left:4px solid #315efb; } }
+
+/* Source code uses an editor-like dark canvas for stronger code contrast. */
+.review-page .code-view { background:#fff; color:#26334a; }
+.review-page .code-line code { color:#26334a; }
+.review-page .line-no { color:#687d8f; }
+.review-page .code-line.has-comment { background:rgba(255,200,87,.08); }
+.review-page .code-line.secret-line { background:rgba(255,113,131,.12); box-shadow:inset 3px 0 #ff7183; }
+.review-page .evidence-highlight { background:#ffd166; color:#172033; }
+.review-page .secret-highlight { background:#e05265; color:#fff; }

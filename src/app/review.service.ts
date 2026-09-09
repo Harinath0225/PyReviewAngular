@@ -67,12 +67,34 @@ export class ReviewService {
   readonly history = signal<ReviewRecord[]>(this.readHistory());
   readonly liveEvents = signal<DagEvent[]>([]);
   readonly activeReviewId = signal<string | null>(null);
+  readonly executionStage = signal(0);
 
   submit(source: ReviewInput, name: string, code: string, language = 'python', businessDocuments?: BusinessDocument[], onStarted?: (reviewId: string) => void): Observable<ReviewRecord> {
     return new Observable(subscriber => {
       this.liveEvents.set([]);
       let pollHandle: ReturnType<typeof setInterval> | undefined;
-      const finish = (): void => { if (pollHandle) clearInterval(pollHandle); };
+      let stageHandle: ReturnType<typeof setInterval> | undefined;
+      let pendingResult: Record<string, any> | null = null;
+      let backendComplete = false;
+      const stageDurationMs = 5000 / 7;
+      const finish = (): void => {
+        if (pollHandle) clearInterval(pollHandle);
+        if (stageHandle) clearInterval(stageHandle);
+      };
+      const finishStagePresentation = (): void => {
+        if (!pendingResult) return;
+        if (stageHandle) clearInterval(stageHandle);
+        finish();
+        this.activeReviewId.set(null);
+        this.executionStage.set(7);
+        const review = this.fromApi(pendingResult, source, name, code, language, businessDocuments);
+        this.current.set(review);
+        const nextHistory = [review, ...this.history()];
+        this.history.set(nextHistory);
+        this.saveHistory(nextHistory);
+        subscriber.next(review);
+        subscriber.complete();
+      };
       subscriber.add(finish);
       const payload: Record<string, any> = { code_snippet: code, language };
       if (businessDocuments && businessDocuments.length > 0) {
@@ -83,22 +105,24 @@ export class ReviewService {
           const reviewId = String(started['review_id']);
           this.current.set(null);
           this.activeReviewId.set(reviewId);
+          this.executionStage.set(0);
           onStarted?.(reviewId);
+          stageHandle = setInterval(() => {
+            if (this.executionStage() < 6) this.executionStage.update(stage => stage + 1);
+            else if (backendComplete) {
+              this.executionStage.set(7);
+              finishStagePresentation();
+            }
+          }, stageDurationMs);
           pollHandle = setInterval(() => this.http.get<Record<string, any>>(`${this.apiUrl}/review/${reviewId}`).subscribe({
             next: state => {
               this.liveEvents.set((state['events'] ?? []) as DagEvent[]);
               if (state['status'] === 'completed' && state['result']) {
-                finish();
-                this.activeReviewId.set(null);
-                const review = this.fromApi(state['result'], source, name, code, language, businessDocuments);
-                this.current.set(review);
-                const nextHistory = [review, ...this.history()];
-                this.history.set(nextHistory);
-                this.saveHistory(nextHistory);
-                subscriber.next(review);
-                subscriber.complete();
+                pendingResult = state['result'];
+                backendComplete = true;
               } else if (state['status'] === 'failed') {
                 finish();
+                if (stageHandle) clearInterval(stageHandle);
                 this.activeReviewId.set(null);
                 subscriber.error(new Error(String(state['error'] ?? 'Review failed')));
               }

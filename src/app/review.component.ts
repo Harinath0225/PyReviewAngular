@@ -130,7 +130,7 @@ interface GuidanceCard {
             }
             @empty { <li class="guidance-item"><p>Apply the suggested replacement, add a regression test, and rerun the review before merge.</p></li> }
           </ol>
-          @if (item.owaspFindings.length) { <div class="owasp-links"><span>OWASP tool results</span>@for (finding of item.owaspFindings; track finding.category) { <a [href]="finding.url" target="_blank" rel="noopener">{{ finding.category }} <small>{{ finding.importance }}</small></a> }</div> }
+          @if (item.owaspFindings.length) { <div class="owasp-links"><div class="owasp-heading"><i class="material-symbols-outlined">shield_lock</i><div><span>SECURITY REFERENCES</span><strong>OWASP TOOL RESULTS</strong><small>Prioritized guidance from the OWASP Top 10 knowledge base.</small></div><b>{{ item.owaspFindings.length }} {{ item.owaspFindings.length === 1 ? 'category' : 'categories' }}</b></div><div class="owasp-card-grid">@for (finding of item.owaspFindings; track finding.category) { <a [href]="finding.url" target="_blank" rel="noopener"><span class="owasp-card-top"><i class="material-symbols-outlined">open_in_new</i><b>{{ finding.category }}</b></span><small>{{ finding.importance }}</small></a> }</div></div> }
         </section>
 
         @if (item.businessLogicFindings?.length) {
@@ -170,9 +170,9 @@ interface GuidanceCard {
 
         <div class="feedback">
           <span>Help improve the agent</span>
-          <button [class.chosen]="feedback() === 'helpful'" (click)="feedback.set('helpful')">Helpful</button>
-          <button [class.chosen]="feedback() === 'needs_work'" (click)="feedback.set('needs_work')">Needs work</button>
-          @if (feedback()) { <input #feedbackComment placeholder="What should the next review improve?" (keyup.enter)="sendFeedback(item.id, feedbackComment.value)"><button class="feedback-send" (click)="sendFeedback(item.id, feedbackComment.value)">Send feedback</button> }
+          <button [class.chosen]="feedback() === 'helpful'" (click)="feedback.set('helpful'); feedbackSent.set(false)">Helpful</button>
+          <button [class.chosen]="feedback() === 'needs_work'" (click)="feedback.set('needs_work'); feedbackSent.set(false)">Needs work</button>
+          @if (feedback() && !feedbackSent()) { <input #feedbackComment placeholder="What should the next review improve?" (keyup.enter)="sendFeedback(item.id, feedbackComment.value)"><button class="feedback-send" (click)="sendFeedback(item.id, feedbackComment.value)">Send feedback</button> }
           @if (feedbackSent()) { <em>Feedback recorded for future review improvements.</em> }
         </div>
       </section>
@@ -255,6 +255,12 @@ export class ReviewComponent implements OnDestroy {
   workflowStatus(node: string, events: import('./review.service').DagEvent[]): WorkflowStatus {
     const stageIndex = this.workflowNodes.findIndex(item => item.id === node);
     if (stageIndex < 0) return 'pending';
+    if (this.isLoading()) {
+      const presentationStage = this.service.executionStage();
+      if (presentationStage >= this.workflowNodes.length) return 'completed';
+      if (stageIndex < presentationStage) return 'completed';
+      return stageIndex === presentationStage ? 'running' : 'pending';
+    }
     if (this.isStageCompleted(node, events)) return 'completed';
     const activeIndex = this.workflowNodes.findIndex(item => this.isStageStarted(item.id, events) && !this.isStageCompleted(item.id, events));
     return activeIndex === stageIndex ? 'running' : 'pending';
@@ -280,7 +286,7 @@ export class ReviewComponent implements OnDestroy {
     this.service.submitFeedback(reviewId, rating, comment)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: () => this.feedbackSent.set(true),
+        next: () => { this.feedbackSent.set(true); this.feedback.set(''); },
         error: (err) => console.error('Feedback submission failed:', err),
         complete: () => console.log('Feedback submitted')
       });
