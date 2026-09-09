@@ -14,14 +14,14 @@ interface LanguageOption { id: string; label: string; badge: string; extensions:
         <div class="timeline-rail"><span class="rail-dot active"></span><span class="rail-line"></span><span class="rail-dot" [class.active]="step() === 2"></span></div>
         <div class="timeline-content">
           <section class="step-block" [class.step-complete]="contextReady()">
-            <div class="step-heading"><div class="step-number">01</div><div><span class="step-kicker">OPTIONAL CONTEXT</span><h2>Start with the bigger picture</h2><p>Share the requirement, ticket, or visual reference so findings are grounded in what the product should do.</p></div><span class="step-status">{{ contextReady() ? 'ADDED' : 'OPTIONAL' }}</span></div>
-            <div class="context-card">
+            <div class="step-heading"><div class="step-number">01</div><div><span class="step-kicker">OPTIONAL CONTEXT</span><h2>Start with the bigger picture</h2><p>Share the requirement, ticket, or visual reference so findings are grounded in what the product should do.</p></div><div class="step-heading-actions"><span class="step-status">{{ contextReady() ? 'ADDED' : 'OPTIONAL' }}</span><button type="button" class="collapse-step" [attr.aria-expanded]="contextExpanded()" (click)="toggleContext()"><i class="material-symbols-outlined">{{ contextExpanded() ? 'expand_less' : 'expand_more' }}</i>{{ contextExpanded() ? 'Collapse' : 'Add context' }}</button></div></div>
+            @if (contextExpanded()) { <div class="context-card">
               <div class="context-tabs"><button type="button" [class.selected]="contextType() === 'upload'" (click)="selectContext('upload')"><span>↑</span><b>Upload brief</b><small>Jira export, spec, or notes</small></button><button type="button" [class.selected]="contextType() === 'jira'" (click)="selectContext('jira')"><span>↗</span><b>Jira link</b><small>Keep the ticket close</small></button><button type="button" [class.selected]="contextType() === 'screenshot'" (click)="selectContext('screenshot')"><span>▧</span><b>Screenshot</b><small>Show the intended state</small></button></div>
               @if (contextType() === 'upload') { <button type="button" class="context-drop" (click)="businessDocInput.click()"><input #businessDocInput type="file" accept=".txt,.md,.pdf,.doc,.docx" (change)="onBusinessDocument($event)" hidden><span class="context-symbol">+</span><strong>{{ businessDocuments().length ? 'Add another context file' : 'Choose a context file' }}</strong><small>Jira export, requirements, or product notes</small></button> }
               @if (contextType() === 'jira') { <div class="context-link"><span>↗</span><input [(ngModel)]="jiraUrl" (ngModelChange)="updateJiraContext()" placeholder="https://your-workspace.atlassian.net/browse/PROJ-123"><small>We will attach this reference to the review record.</small></div> }
               @if (contextType() === 'screenshot') { <button type="button" class="context-drop screenshot-drop" (click)="screenshotInput.click()"><input #screenshotInput type="file" accept="image/png,image/jpeg,image/webp" (change)="onScreenshot($event)" hidden><span class="context-symbol">▧</span><strong>{{ screenshotName || 'Choose a screenshot' }}</strong><small>{{ screenshotName ? 'Ready to guide the review' : 'PNG, JPG, or WEBP' }}</small></button> }
               @for (doc of businessDocuments(); track doc.fileName) { <div class="context-file"><span>□</span><strong>{{ doc.fileName }}</strong><select [(ngModel)]="doc.type" aria-label="Context type"><option value="jira">Jira story</option><option value="specification">Specification</option><option value="requirements">Requirements</option><option value="other">Other</option></select><button type="button" (click)="removeBusinessDocument(doc.fileName)" aria-label="Remove context">×</button></div> }
-            </div>
+            </div> } @else { <button type="button" class="collapsed-context" (click)="toggleContext()"><i class="material-symbols-outlined">add_circle</i><span><strong>{{ contextReady() ? 'Context attached' : 'No context added' }}</strong><small>{{ contextReady() ? 'Click to review or change the optional context.' : 'Add a Jira link, brief, or screenshot if it helps the reviewer.' }}</small></span><i class="material-symbols-outlined">chevron_right</i></button> }
             <button type="button" class="skip-context" (click)="skipContext()">Skip context <span>↓</span></button>
           </section>
 
@@ -58,6 +58,7 @@ export class HomeComponent {
   readonly inputError = signal('');
   readonly businessDocuments = signal<BusinessDocument[]>([]);
   readonly contextType = signal<'upload' | 'jira' | 'screenshot'>('upload');
+  readonly contextExpanded = signal(false);
   readonly languageId = signal('python');
   readonly languageDetected = signal(false);
   readonly languageOptions: LanguageOption[] = [
@@ -130,7 +131,10 @@ export class HomeComponent {
     this.inputError.set('');
   }
 
+  toggleContext(): void { this.contextExpanded.update(expanded => !expanded); }
+
   skipContext(): void {
+    this.contextExpanded.set(false);
     this.step.set(2);
     setTimeout(() => this.reviewStep?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
   }
