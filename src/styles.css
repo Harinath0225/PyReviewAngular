@@ -499,3 +499,110 @@ body[data-theme='light'] .home-intro > p { position:relative; z-index:1; max-wid
 .collapsed-context:hover { border-color:#315efb; background:#edf2ff; transform:translateY(-1px); }
 .collapsed-context > span { display:flex; flex:1; flex-direction:column; gap:4px; } .collapsed-context strong { color:#172033; font-size:12px; } .collapsed-context small { color:#68758b; font-size:11px; } .collapsed-context > .material-symbols-outlined { font-size:21px; }
 @media(max-width:700px) { .step-heading-actions { grid-column:2; align-items:flex-start; flex-direction:row; } }
+
+/* PR link badge, PR banner, and multi-file tabs */
+.pr-link-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #238636;
+  color: #fff !important;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  vertical-align: middle;
+  transition: background 0.15s, transform 0.15s;
+}
+.pr-link-badge:hover {
+  background: #2ea043;
+  transform: translateY(-1px);
+}
+.pr-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  border: 1px solid #c9d8ff;
+  border-radius: 8px;
+  background: #edf2ff;
+}
+.pr-banner-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #172033;
+  font-size: 13px;
+}
+.pr-banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: #315efb;
+  color: #fff !important;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.pr-banner-btn:hover {
+  background: #214bcc;
+}
+.file-tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #dbe4f3;
+  background: #f8fafd;
+  overflow-x: auto;
+}
+.file-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border: 1px solid #dbe4f3;
+  border-radius: 6px;
+  background: #fff;
+  color: #475569;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.file-tab-btn.active {
+  border-color: #315efb;
+  background: #edf2ff;
+  color: #315efb;
+  font-weight: 700;
+}
+.file-tab-btn:hover:not(.active) {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+.file-tab-btn .tab-badge {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+.path-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  margin-right: 6px;
+  border-radius: 4px;
+  background: #f1f5f9;
+  color: #475569;
+  font: 600 11px 'Courier New', monospace;
+  border: 1px solid #e2e8f0;
+}
+
