@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, OnDestroy, ViewChild, ElementRef, effect } from '@angular/core';
+import { Component, computed, inject, signal, OnDestroy, ViewChild, ElementRef, effect, AfterViewChecked } from '@angular/core';
 import { SlicePipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReviewService, Severity, InlineComment, ReviewFile } from './review.service';
@@ -64,6 +64,18 @@ interface GuidanceCard {
             }
           </div>
         </div>
+
+        
+        @if (item.dependencyFlowDiagram) {
+          <section class="dependency-flow-panel">
+            <div class="dep-flow-heading">
+              <span class="panel-kicker">DEPENDENCY & IMPACT FLOW</span>
+              <h2>Impact Analysis</h2>
+              <p>Visual diagram showing code dependencies and edge case impacts.</p>
+            </div>
+            <div class="mermaid-container" id="mermaid-diagram"></div>
+          </section>
+        }
 
         <section class="dag-panel">
           <div class="dag-heading"><div><span class="panel-kicker">LIVE ORCHESTRATION</span><h2>Review execution</h2><p>Each stage begins after the preceding stage completes.</p></div><span>{{ workflowEvents(item).length }} events</span></div>
@@ -193,13 +205,49 @@ interface GuidanceCard {
 
         @if (item.businessDocuments?.length) {
           <section class="business-documents-panel">
-            <div class="business-docs-header"><span class="panel-kicker">BUSINESS CONTEXT</span><h2>Uploaded documents</h2></div>
+            <div class="business-docs-header">
+              <div>
+                <span class="panel-kicker">BUSINESS CONTEXT & REQUIREMENTS</span>
+                <h2>Reference documents & BRD</h2>
+              </div>
+              <span class="doc-count-badge">{{ item.businessDocuments?.length ?? 0 }} {{ item.businessDocuments?.length === 1 ? 'reference' : 'references' }} attached</span>
+            </div>
             <div class="business-docs-list">
-              @for (doc of item.businessDocuments; track doc.fileName) {
+              @for (doc of (item.businessDocuments ?? []); track doc.fileName) {
                 <div class="doc-preview">
-                  <span class="doc-type-badge">{{ doc.type }}</span>
-                  <strong>{{ doc.fileName }}</strong>
-                  <small>{{ doc.uploadedAt | date: 'short' }}</small>
+                  <div class="doc-preview-head">
+                    <span class="doc-type-badge">{{ doc.type }}</span>
+                    <strong>{{ doc.fileName }}</strong>
+                    @if (doc.uploadedAt) {
+                      <small>{{ doc.uploadedAt | date: 'short' }}</small>
+                    }
+                  </div>
+                  @if (doc.type === 'jira' && doc.content.startsWith('http')) {
+                    <div class="doc-action-row">
+                      <a [href]="doc.content" target="_blank" rel="noopener noreferrer" class="doc-external-link">Open ticket ↗</a>
+                    </div>
+                  } @else if (doc.content.startsWith('data:image/')) {
+                    <div class="doc-action-row">
+                      <button type="button" class="doc-toggle-btn" (click)="toggleDocPreview(doc.fileName)">
+                        {{ isDocExpanded(doc.fileName) ? 'Hide screenshot ▲' : 'View screenshot ▼' }}
+                      </button>
+                    </div>
+                    @if (isDocExpanded(doc.fileName)) {
+                      <div class="doc-image-wrap">
+                        <img [src]="doc.content" [alt]="doc.fileName" class="doc-preview-img" />
+                      </div>
+                    }
+                  } @else if (doc.content) {
+                    <div class="doc-action-row">
+                      <button type="button" class="doc-toggle-btn" (click)="toggleDocPreview(doc.fileName)">
+                        {{ isDocExpanded(doc.fileName) ? 'Hide reference text ▲' : 'View reference text ▼' }}
+                      </button>
+                      <span class="doc-length-note">{{ doc.content.length }} characters</span>
+                    </div>
+                    @if (isDocExpanded(doc.fileName)) {
+                      <pre class="doc-content-box">{{ doc.content }}</pre>
+                    }
+                  }
                 </div>
               }
             </div>
@@ -226,7 +274,7 @@ interface GuidanceCard {
     }
   `
 })
-export class ReviewComponent implements OnDestroy {
+export class ReviewComponent implements OnDestroy, AfterViewChecked {
   readonly service = inject(ReviewService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -239,6 +287,20 @@ export class ReviewComponent implements OnDestroy {
   readonly selectedWorkflowNode = signal('');
   readonly workflowLogExpanded = signal(false);
   readonly activeFilePath = signal<string>('');
+  readonly expandedDocs = signal<Set<string>>(new Set());
+
+  toggleDocPreview(fileName: string): void {
+    this.expandedDocs.update(set => {
+      const next = new Set(set);
+      if (next.has(fileName)) next.delete(fileName);
+      else next.add(fileName);
+      return next;
+    });
+  }
+
+  isDocExpanded(fileName: string): boolean {
+    return this.expandedDocs().has(fileName);
+  }
   readonly workflowNodes: WorkflowNode[] = [
     { id: 'orchestrator', label: 'Orchestrator', detail: 'Pipeline control', icon: 'account_tree' },
     { id: 'deterministic_ast', label: 'Deterministic AST', detail: 'Static parsing', icon: 'code' },
@@ -253,7 +315,8 @@ export class ReviewComponent implements OnDestroy {
   constructor() { 
     const id = this.route.snapshot.paramMap.get('id'); 
     if (!id) { this.router.navigate(['/history']); return; } 
-    this.service.loadById(id); 
+    this.mermaidRendered.set(false);
+      this.service.loadById(id); 
     if (!this.service.current() && !this.isLoading()) this.router.navigate(['/history']); 
     
     // Watch for running stage changes and auto-scroll
@@ -383,6 +446,27 @@ export class ReviewComponent implements OnDestroy {
         error: (err) => console.error('Feedback submission failed:', err),
         complete: () => console.log('Feedback submitted')
       });
+  }
+
+
+  private mermaidRendered = signal(false);
+
+  async ngAfterViewChecked(): Promise<void> {
+    const item = this.review();
+    if (!item?.dependencyFlowDiagram || this.mermaidRendered() || this.isLoading()) return;
+    const container = document.getElementById('mermaid-diagram');
+    if (!container) return;
+    this.mermaidRendered.set(true);
+    try {
+      const mermaidModule = await import('mermaid');
+      const mermaid = mermaidModule.default;
+      mermaid.initialize({ startOnLoad: false, theme: 'dark', themeVariables: { primaryColor: '#315efb', edgeLabelBackground: '#0d141e', nodeTextColor: '#e2e8f0', mainBkg: '#1a2332', nodeBorder: '#315efb' }});
+      const { svg } = await mermaid.render('dep-flow-svg', item.dependencyFlowDiagram);
+      container.innerHTML = svg;
+    } catch (e) {
+      console.error('Mermaid render error:', e);
+      container.innerHTML = '<pre style="color:#94a3b8;font-size:12px;white-space:pre-wrap;">' + item.dependencyFlowDiagram + '</pre>';
+    }
   }
 
   private autoScrollToActiveStage(item: { dagEvents: import('./review.service').DagEvent[] }): void {

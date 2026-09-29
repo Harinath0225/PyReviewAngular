@@ -67,6 +67,7 @@ export interface ReviewRecord {
   prUrl?: string;
   prNumber?: number;
   files?: ReviewFile[];
+  dependencyFlowDiagram?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -171,6 +172,7 @@ export class ReviewService {
     const rawFiles = (result['files'] ?? result['github_pr_review']?.['files'] ?? []) as ReviewFile[];
     const files = Array.isArray(rawFiles) && rawFiles.length > 0 ? rawFiles : undefined;
 
+    const depDiagram = result['dependency_flow_diagram'] ? String(result['dependency_flow_diagram']) : undefined;
     const review: ReviewRecord = {
       id: String(result['review_id'] ?? this.createId()),
       name: String(result['name'] ?? (name || 'pasted-snippet.py')),
@@ -189,13 +191,14 @@ export class ReviewService {
       summary: String(result['summary'] ?? 'Review completed.'),
       owaspContext: (result['owasp_context'] ?? []).map(String),
       owaspFindings: (result['owasp_findings'] ?? []) as OwaspFinding[],
-      businessDocuments: businessDocuments,
+      businessDocuments: (result['business_documents'] ?? businessDocuments),
       businessLogicFindings: (result['business_logic_findings'] ?? []) as BusinessLogicFinding[],
       recommendations: (result['recommendations'] ?? []).map(String),
       dagEvents: (result['dag_events'] ?? []) as DagEvent[],
       prUrl: prUrl ? String(prUrl) : undefined,
       prNumber: prNumber ? Number(prNumber) : undefined,
-      files
+      files,
+      dependencyFlowDiagram: depDiagram
     };
     return review;
   }

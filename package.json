@@ -16,6 +16,10 @@
     "@angular/platform-browser": "20.3.30",
     "@angular/platform-browser-dynamic": "20.3.30",
     "@angular/router": "20.3.30",
+    "marked": "^18.0.14",
+    "marked-katex-extension": "^5.1.13",
+    "mermaid": "^11.17.2",
+    "ngx-markdown": "^22.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
