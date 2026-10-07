@@ -173,6 +173,32 @@ type LabTab = 'armor' | 'scorecard' | 'delivery';
                 }
               </div>
 
+              @if (result['quality_metrics']; as quality) {
+                <div class="adk-trajectory-card">
+                  <div class="trajectory-head">
+                    <span class="traj-title">ANSWER QUALITY VS GOLDEN REFERENCE</span>
+                    @if (result['judge']; as judge) {
+                      <b class="traj-score">{{ percent(judge['score']) }}/100 {{ judge['mode'] === 'llm' ? 'LLM judge' : 'heuristic judge' }}</b>
+                    }
+                  </div>
+                  <div class="dimension-list">
+                    @for (entry of objectEntries(quality); track entry[0]) {
+                      <div>
+                        <span>{{ qualityLabel(entry[0]) }}</span>
+                        <b>{{ percent(entry[1]) }}</b>
+                        <i><em [style.width.%]="percent(entry[1])"></em></i>
+                      </div>
+                    }
+                  </div>
+                  @if (result['judge']; as judge) {
+                    <div class="trajectory-row">
+                      <small>JUDGE</small>
+                      <span>{{ judge['rationale'] || 'Rubric scoring.' }} {{ judge['calibration']['applied'] ? '(calibrated, run #' + judge['calibration']['id'] + ')' : '(not calibrated yet - see Agent Scorecard)' }}</span>
+                    </div>
+                  }
+                </div>
+              }
+
               @if (result['adk_spec']) {
                 <div class="adk-spec-section">
                   <button type="button" class="adk-spec-toggle" (click)="showSpec.set(!showSpec())">
@@ -519,6 +545,17 @@ def get_user_secure(user_id: int) -> list:
     return Number(value) || 0;
   }
 
+  percent(value: unknown): number {
+    return Math.round((Number(value) || 0) * 100);
+  }
+
+  qualityLabel(key: string): string {
+    const labels: Record<string, string> = {
+      bleu: 'BLEU', meteor: 'METEOR', rouge1: 'ROUGE-1', rouge2: 'ROUGE-2', rougeL: 'ROUGE-L', llm_judge: 'LLM judge'
+    };
+    return labels[key] ?? key;
+  }
+
   openTrajectoryModal(): void {
     if (!this.scorecard()) {
       this.evaluate();
@@ -590,4 +627,4 @@ def get_user_secure(user_id: int) -> list:
       complete: () => this.loading.set(false)
     });
   }
-}
+}
