@@ -22,6 +22,7 @@ import { TrajectoryLogsComponent } from './trajectory-logs.component';
 import { MetricExplainerComponent } from './metric-explainer.component';
 import { BehaviorStudioComponent } from './behavior-studio.component';
 import { TokenomicsDashboardComponent } from './tokenomics-dashboard.component';
+import { AdkWebuiPanelComponent } from './adk-webui-panel.component';
 
 @Component({
   selector: 'app-scorecard',
@@ -38,7 +39,8 @@ import { TokenomicsDashboardComponent } from './tokenomics-dashboard.component';
     JudgeCalibrationComponent,
     MetricExplainerComponent,
     BehaviorStudioComponent,
-    TokenomicsDashboardComponent
+    TokenomicsDashboardComponent,
+    AdkWebuiPanelComponent
   ],
   styles: [`
     .sc-page { display: grid; gap: 20px; }
@@ -196,6 +198,7 @@ import { TokenomicsDashboardComponent } from './tokenomics-dashboard.component';
 
       <app-hero-stats [summary]="summary()" />
       <app-tokenomics-dashboard [metrics]="efficiency()" />
+      <app-adk-webui-panel (onSync)="syncAdk()" />
       <app-behavior-studio [currentCapability]="summary()?.capability_score ?? 25" [currentReliability]="summary()?.reliability_index ?? 65" [currentCost]="efficiency()?.cost_usd_per_task ?? 0.003" />
       <app-judge-calibration (calibrated)="load()" />
       <app-metric-explainer />

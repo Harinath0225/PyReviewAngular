@@ -56579,6 +56579,277 @@ var TokenomicsDashboardComponent = class _TokenomicsDashboardComponent {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(TokenomicsDashboardComponent, { className: "TokenomicsDashboardComponent", filePath: "src/app/scorecard/tokenomics-dashboard.component.ts", lineNumber: 154 });
 })();
 
+// src/app/scorecard/adk-webui-panel.component.ts
+function AdkWebuiPanelComponent_Conditional_20_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r1 = \u0275\u0275getCurrentView();
+    \u0275\u0275domElementStart(0, "div", 14)(1, "div", 15)(2, "div", 16);
+    \u0275\u0275domElement(3, "span", 17)(4, "span", 18)(5, "span", 19);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(6, "div", 20)(7, "span", 21);
+    \u0275\u0275text(8, "\u{1F512}");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(9, "code");
+    \u0275\u0275text(10, "http://127.0.0.1:8085/dev-ui/");
+    \u0275\u0275domElementEnd()();
+    \u0275\u0275domElementStart(11, "div", 22)(12, "button", 23);
+    \u0275\u0275domListener("click", function AdkWebuiPanelComponent_Conditional_20_Template_button_click_12_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.toggleTall());
+    });
+    \u0275\u0275text(13);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(14, "button", 24);
+    \u0275\u0275domListener("click", function AdkWebuiPanelComponent_Conditional_20_Template_button_click_14_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.refreshIframe());
+    });
+    \u0275\u0275text(15, " \u21BB Reload ");
+    \u0275\u0275domElementEnd()()();
+    \u0275\u0275domElement(16, "iframe", 25);
+    \u0275\u0275domElementStart(17, "footer", 26)(18, "div", 27)(19, "strong");
+    \u0275\u0275text(20, "Tip for Demo:");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(21, " Navigate to the ");
+    \u0275\u0275domElementStart(22, "b");
+    \u0275\u0275text(23, "Eval");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(24, " tab inside ADK to run ");
+    \u0275\u0275domElementStart(25, "code");
+    \u0275\u0275text(26, "eval_set_1.evalset.json");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(27, " with registered custom metrics (BLEU, METEOR, Tokens, Latency). Once complete, click ");
+    \u0275\u0275domElementStart(28, "b");
+    \u0275\u0275text(29, '"Sync Runs to Scorecard"');
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(30, " above to import the results immediately! ");
+    \u0275\u0275domElementEnd()()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275classProp("tall", ctx_r1.isTall());
+    \u0275\u0275advance(12);
+    \u0275\u0275domProperty("title", ctx_r1.isTall() ? "Compact Height" : "Expand Height");
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", ctx_r1.isTall() ? "Compact View" : "Expand View", " ");
+    \u0275\u0275advance(3);
+    \u0275\u0275domProperty("src", ctx_r1.safeAdkUrl, \u0275\u0275sanitizeResourceUrl);
+  }
+}
+function AdkWebuiPanelComponent_Conditional_21_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r3 = \u0275\u0275getCurrentView();
+    \u0275\u0275domElementStart(0, "div", 28);
+    \u0275\u0275domListener("click", function AdkWebuiPanelComponent_Conditional_21_Template_div_click_0_listener() {
+      \u0275\u0275restoreView(_r3);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.toggleExpand());
+    });
+    \u0275\u0275domElementStart(1, "div", 29)(2, "div", 30)(3, "span", 31);
+    \u0275\u0275text(4, "\u2699");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(5, "div")(6, "strong");
+    \u0275\u0275text(7, "Active Agents");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(8, "small");
+    \u0275\u0275text(9, "code_review_agent \u2022 EvaluationGenerator");
+    \u0275\u0275domElementEnd()()();
+    \u0275\u0275domElementStart(10, "div", 30)(11, "span", 31);
+    \u0275\u0275text(12, "\u{1F4CA}");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(13, "div")(14, "strong");
+    \u0275\u0275text(15, "Custom Metrics Active");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(16, "small");
+    \u0275\u0275text(17, "Tokens, Latency SLA, Trajectory, BLEU, METEOR, ROUGE-L, Judge");
+    \u0275\u0275domElementEnd()()();
+    \u0275\u0275domElementStart(18, "div", 30)(19, "span", 31);
+    \u0275\u0275text(20, "\u{1F517}");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(21, "div")(22, "strong");
+    \u0275\u0275text(23, "Local Endpoint");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(24, "small");
+    \u0275\u0275text(25, "http://127.0.0.1:8085/dev-ui/");
+    \u0275\u0275domElementEnd()()()();
+    \u0275\u0275domElementStart(26, "button", 32);
+    \u0275\u0275text(27, " Click to Expand & Interact with ADK WebUI \u2193 ");
+    \u0275\u0275domElementEnd()();
+  }
+}
+var AdkWebuiPanelComponent = class _AdkWebuiPanelComponent {
+  sanitizer = inject2(DomSanitizer);
+  onSync = output();
+  rawAdkUrl = "http://127.0.0.1:8085/dev-ui/";
+  safeAdkUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.rawAdkUrl);
+  isExpanded = signal(true, ...ngDevMode ? [{ debugName: "isExpanded" }] : []);
+  isTall = signal(false, ...ngDevMode ? [{ debugName: "isTall" }] : []);
+  toggleExpand() {
+    this.isExpanded.update((v) => !v);
+  }
+  toggleTall() {
+    this.isTall.update((v) => !v);
+  }
+  refreshIframe() {
+    this.isExpanded.set(false);
+    setTimeout(() => this.isExpanded.set(true), 50);
+  }
+  triggerSync() {
+    this.onSync.emit();
+  }
+  static \u0275fac = function AdkWebuiPanelComponent_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _AdkWebuiPanelComponent)();
+  };
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _AdkWebuiPanelComponent, selectors: [["app-adk-webui-panel"]], outputs: { onSync: "onSync" }, decls: 22, vars: 3, consts: [[1, "sc-card", "sc-adk-panel"], [1, "sc-adk-head"], [1, "sc-adk-title-group"], [1, "sc-badge-row"], [1, "sc-kicker"], [1, "sc-adk-status-badge"], [1, "pulse-dot-green"], [1, "sc-muted"], [1, "sc-adk-actions"], ["type", "button", 1, "sc-toggle-btn", 3, "click"], ["target", "_blank", "rel", "noopener noreferrer", 1, "sc-external-link", 3, "href"], ["type", "button", 1, "primary-btn", "sc-sync-mini-btn", 3, "click"], [1, "sc-iframe-container", 3, "tall"], [1, "sc-collapsed-preview"], [1, "sc-iframe-container"], [1, "sc-iframe-bar"], [1, "sc-browser-dots"], [1, "dot", "red"], [1, "dot", "yellow"], [1, "dot", "green"], [1, "sc-url-bar"], [1, "lock-icon"], [1, "sc-iframe-controls"], ["type", "button", 1, "sc-icon-btn", 3, "click", "title"], ["type", "button", "title", "Reload WebUI", 1, "sc-icon-btn", 3, "click"], ["title", "Google ADK Web UI Workbench", "allow", "clipboard-read; clipboard-write", 1, "sc-adk-iframe", 3, "src"], [1, "sc-iframe-footer"], [1, "sc-hint"], [1, "sc-collapsed-preview", 3, "click"], [1, "sc-preview-features"], [1, "sc-feat-pill"], [1, "sc-pill-icon"], ["type", "button", 1, "sc-launch-preview-btn"]], template: function AdkWebuiPanelComponent_Template(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275domElementStart(0, "section", 0)(1, "div", 1)(2, "div", 2)(3, "div", 3)(4, "span", 4);
+      \u0275\u0275text(5, "GOOGLE AGENT DEVELOPMENT KIT (ADK)");
+      \u0275\u0275domElementEnd();
+      \u0275\u0275domElementStart(6, "span", 5);
+      \u0275\u0275domElement(7, "span", 6);
+      \u0275\u0275text(8, " RUNNING ON PORT 8085 ");
+      \u0275\u0275domElementEnd()();
+      \u0275\u0275domElementStart(9, "h2");
+      \u0275\u0275text(10, "ADK Testing & Evaluation WebUI");
+      \u0275\u0275domElementEnd();
+      \u0275\u0275domElementStart(11, "p", 7);
+      \u0275\u0275text(12, "Live interactive workbench from Google ADK. Run evaluation test suites, inspect agent tool call trajectories, review NLP metrics (BLEU, METEOR, ROUGE-L), and track token & latency SLAs directly inside this dashboard.");
+      \u0275\u0275domElementEnd()();
+      \u0275\u0275domElementStart(13, "div", 8)(14, "button", 9);
+      \u0275\u0275domListener("click", function AdkWebuiPanelComponent_Template_button_click_14_listener() {
+        return ctx.toggleExpand();
+      });
+      \u0275\u0275text(15);
+      \u0275\u0275domElementEnd();
+      \u0275\u0275domElementStart(16, "a", 10);
+      \u0275\u0275text(17, " Open in New Window \u2197 ");
+      \u0275\u0275domElementEnd();
+      \u0275\u0275domElementStart(18, "button", 11);
+      \u0275\u0275domListener("click", function AdkWebuiPanelComponent_Template_button_click_18_listener() {
+        return ctx.triggerSync();
+      });
+      \u0275\u0275text(19, " Sync Runs to Scorecard ");
+      \u0275\u0275domElementEnd()()();
+      \u0275\u0275conditionalCreate(20, AdkWebuiPanelComponent_Conditional_20_Template, 31, 5, "div", 12)(21, AdkWebuiPanelComponent_Conditional_21_Template, 28, 0, "div", 13);
+      \u0275\u0275domElementEnd();
+    }
+    if (rf & 2) {
+      \u0275\u0275advance(15);
+      \u0275\u0275textInterpolate1(" ", ctx.isExpanded() ? "Hide Embedded WebUI" : "Open Embedded WebUI", " ");
+      \u0275\u0275advance();
+      \u0275\u0275domProperty("href", ctx.rawAdkUrl, \u0275\u0275sanitizeUrl);
+      \u0275\u0275advance(4);
+      \u0275\u0275conditional(ctx.isExpanded() ? 20 : 21);
+    }
+  }, dependencies: [CommonModule], styles: ["\n\n.sc-adk-panel[_ngcontent-%COMP%] {\n  margin-top: 6px;\n  border: 1px solid color-mix(in srgb, var(--blue) 35%, var(--line));\n}\n.sc-adk-head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 16px;\n  margin-bottom: 14px;\n  flex-wrap: wrap;\n}\n.sc-adk-title-group[_ngcontent-%COMP%] {\n  max-width: 720px;\n}\n.sc-adk-head[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  margin: 4px 0 6px;\n  font-size: 18px;\n}\n.sc-badge-row[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  flex-wrap: wrap;\n}\n.sc-adk-status-badge[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  font-size: 10px;\n  font-weight: 700;\n  color: var(--teal);\n  border: 1px solid var(--teal);\n  background: color-mix(in srgb, var(--teal) 10%, transparent);\n  padding: 2px 8px;\n  border-radius: 999px;\n}\n.pulse-dot-green[_ngcontent-%COMP%] {\n  width: 6px;\n  height: 6px;\n  border-radius: 50%;\n  background: var(--teal);\n  box-shadow: 0 0 6px var(--teal);\n  display: inline-block;\n}\n.sc-adk-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n  flex-wrap: wrap;\n}\n.sc-toggle-btn[_ngcontent-%COMP%] {\n  all: unset;\n  box-sizing: border-box;\n  cursor: pointer;\n  font-size: 12px;\n  font-weight: 600;\n  padding: 7px 12px;\n  border-radius: 8px;\n  border: 1px solid var(--line);\n  color: var(--ink);\n  background: var(--card);\n}\n.sc-toggle-btn[_ngcontent-%COMP%]:hover {\n  border-color: var(--teal);\n  color: var(--teal);\n}\n.sc-external-link[_ngcontent-%COMP%] {\n  all: unset;\n  box-sizing: border-box;\n  cursor: pointer;\n  font-size: 12px;\n  font-weight: 600;\n  padding: 7px 12px;\n  border-radius: 8px;\n  border: 1px solid var(--blue);\n  color: var(--blue);\n  background: color-mix(in srgb, var(--blue) 8%, transparent);\n  text-decoration: none;\n}\n.sc-external-link[_ngcontent-%COMP%]:hover {\n  background: color-mix(in srgb, var(--blue) 18%, transparent);\n}\n.sc-sync-mini-btn[_ngcontent-%COMP%] {\n  font-size: 12px;\n  padding: 7px 14px;\n}\n.sc-iframe-container[_ngcontent-%COMP%] {\n  border: 1px solid var(--line);\n  border-radius: 10px;\n  overflow: hidden;\n  background: #121820;\n  display: flex;\n  flex-direction: column;\n  transition: height .3s ease;\n  height: 620px;\n}\n.sc-iframe-container.tall[_ngcontent-%COMP%] {\n  height: 850px;\n}\n.sc-iframe-bar[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 8px 14px;\n  background: #0b0f14;\n  border-bottom: 1px solid var(--line);\n  gap: 12px;\n}\n.sc-browser-dots[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 6px;\n}\n.sc-browser-dots[_ngcontent-%COMP%]   .dot[_ngcontent-%COMP%] {\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  display: inline-block;\n}\n.dot.red[_ngcontent-%COMP%] {\n  background: #ff5f56;\n}\n.dot.yellow[_ngcontent-%COMP%] {\n  background: #ffbd2e;\n}\n.dot.green[_ngcontent-%COMP%] {\n  background: #27c93f;\n}\n.sc-url-bar[_ngcontent-%COMP%] {\n  flex: 1;\n  max-width: 480px;\n  background: #17202a;\n  border-radius: 6px;\n  padding: 4px 10px;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 11px;\n}\n.lock-icon[_ngcontent-%COMP%] {\n  font-size: 11px;\n  opacity: .7;\n}\n.sc-url-bar[_ngcontent-%COMP%]   code[_ngcontent-%COMP%] {\n  color: var(--teal);\n  font-family: monospace;\n}\n.sc-iframe-controls[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 6px;\n}\n.sc-icon-btn[_ngcontent-%COMP%] {\n  all: unset;\n  box-sizing: border-box;\n  cursor: pointer;\n  font-size: 11px;\n  font-weight: 600;\n  padding: 4px 8px;\n  border-radius: 4px;\n  border: 1px solid var(--line);\n  color: var(--muted);\n}\n.sc-icon-btn[_ngcontent-%COMP%]:hover {\n  color: var(--ink);\n  border-color: var(--teal);\n}\n.sc-adk-iframe[_ngcontent-%COMP%] {\n  width: 100%;\n  flex: 1;\n  border: none;\n  background: #ffffff;\n}\n.sc-iframe-footer[_ngcontent-%COMP%] {\n  padding: 8px 14px;\n  background: #0b0f14;\n  border-top: 1px solid var(--line);\n  font-size: 11px;\n}\n.sc-hint[_ngcontent-%COMP%] {\n  color: var(--muted);\n  line-height: 1.4;\n}\n.sc-hint[_ngcontent-%COMP%]   b[_ngcontent-%COMP%], \n.sc-hint[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: var(--ink);\n}\n.sc-hint[_ngcontent-%COMP%]   code[_ngcontent-%COMP%] {\n  color: var(--teal);\n  background: rgba(0, 0, 0, 0.3);\n  padding: 1px 4px;\n  border-radius: 3px;\n  font-size: 10px;\n}\n.sc-collapsed-preview[_ngcontent-%COMP%] {\n  border: 1px dashed var(--line);\n  border-radius: 8px;\n  padding: 14px 18px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 16px;\n  cursor: pointer;\n  background: color-mix(in srgb, var(--card) 95%, transparent);\n  flex-wrap: wrap;\n}\n.sc-collapsed-preview[_ngcontent-%COMP%]:hover {\n  border-color: var(--blue);\n  background: color-mix(in srgb, var(--blue) 5%, var(--card));\n}\n.sc-preview-features[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 20px;\n  flex-wrap: wrap;\n}\n.sc-feat-pill[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  font-size: 12px;\n}\n.sc-pill-icon[_ngcontent-%COMP%] {\n  font-size: 18px;\n}\n.sc-feat-pill[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  font-size: 12px;\n}\n.sc-feat-pill[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  color: var(--muted);\n  font-size: 11px;\n}\n.sc-launch-preview-btn[_ngcontent-%COMP%] {\n  all: unset;\n  box-sizing: border-box;\n  font-size: 11px;\n  font-weight: 700;\n  color: var(--blue);\n  text-transform: uppercase;\n  letter-spacing: .05em;\n}"] });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(AdkWebuiPanelComponent, [{
+    type: Component,
+    args: [{ selector: "app-adk-webui-panel", standalone: true, imports: [CommonModule], template: `
+    <section class="sc-card sc-adk-panel">
+      <div class="sc-adk-head">
+        <div class="sc-adk-title-group">
+          <div class="sc-badge-row">
+            <span class="sc-kicker">GOOGLE AGENT DEVELOPMENT KIT (ADK)</span>
+            <span class="sc-adk-status-badge">
+              <span class="pulse-dot-green"></span> RUNNING ON PORT 8085
+            </span>
+          </div>
+          <h2>ADK Testing &amp; Evaluation WebUI</h2>
+          <p class="sc-muted">Live interactive workbench from Google ADK. Run evaluation test suites, inspect agent tool call trajectories, review NLP metrics (BLEU, METEOR, ROUGE-L), and track token &amp; latency SLAs directly inside this dashboard.</p>
+        </div>
+
+        <div class="sc-adk-actions">
+          <button type="button" class="sc-toggle-btn" (click)="toggleExpand()">
+            {{ isExpanded() ? 'Hide Embedded WebUI' : 'Open Embedded WebUI' }}
+          </button>
+          <a [href]="rawAdkUrl" target="_blank" rel="noopener noreferrer" class="sc-external-link">
+            Open in New Window &#x2197;
+          </a>
+          <button type="button" class="primary-btn sc-sync-mini-btn" (click)="triggerSync()">
+            Sync Runs to Scorecard
+          </button>
+        </div>
+      </div>
+
+      <!-- EMBEDDED IFRAME WORKBENCH -->
+      @if (isExpanded()) {
+        <div class="sc-iframe-container" [class.tall]="isTall()">
+          <div class="sc-iframe-bar">
+            <div class="sc-browser-dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <div class="sc-url-bar">
+              <span class="lock-icon">&#x1F512;</span>
+              <code>http://127.0.0.1:8085/dev-ui/</code>
+            </div>
+            <div class="sc-iframe-controls">
+              <button type="button" class="sc-icon-btn" (click)="toggleTall()" [title]="isTall() ? 'Compact Height' : 'Expand Height'">
+                {{ isTall() ? 'Compact View' : 'Expand View' }}
+              </button>
+              <button type="button" class="sc-icon-btn" (click)="refreshIframe()" title="Reload WebUI">
+                &#x21BB; Reload
+              </button>
+            </div>
+          </div>
+
+          <iframe
+            [src]="safeAdkUrl"
+            class="sc-adk-iframe"
+            title="Google ADK Web UI Workbench"
+            allow="clipboard-read; clipboard-write">
+          </iframe>
+
+          <footer class="sc-iframe-footer">
+            <div class="sc-hint">
+              <strong>Tip for Demo:</strong> Navigate to the <b>Eval</b> tab inside ADK to run <code>eval_set_1.evalset.json</code> with registered custom metrics (BLEU, METEOR, Tokens, Latency). Once complete, click <b>"Sync Runs to Scorecard"</b> above to import the results immediately!
+            </div>
+          </footer>
+        </div>
+      } @else {
+        <!-- COLLAPSED QUICK-OVERVIEW CARD -->
+        <div class="sc-collapsed-preview" (click)="toggleExpand()">
+          <div class="sc-preview-features">
+            <div class="sc-feat-pill">
+              <span class="sc-pill-icon">&#x2699;</span>
+              <div>
+                <strong>Active Agents</strong>
+                <small>code_review_agent &bull; EvaluationGenerator</small>
+              </div>
+            </div>
+            <div class="sc-feat-pill">
+              <span class="sc-pill-icon">&#x1F4CA;</span>
+              <div>
+                <strong>Custom Metrics Active</strong>
+                <small>Tokens, Latency SLA, Trajectory, BLEU, METEOR, ROUGE-L, Judge</small>
+              </div>
+            </div>
+            <div class="sc-feat-pill">
+              <span class="sc-pill-icon">&#x1F517;</span>
+              <div>
+                <strong>Local Endpoint</strong>
+                <small>http://127.0.0.1:8085/dev-ui/</small>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="sc-launch-preview-btn">
+            Click to Expand &amp; Interact with ADK WebUI &darr;
+          </button>
+        </div>
+      }
+    </section>
+  `, styles: ["/* angular:styles/component:css;208bc605ed9e4939513454a717225a2f27dc04c7ce89b36593a5f177927f1c1d;C:/Coding_learning/pyengineer_ang/PyReviewAngular/src/app/scorecard/adk-webui-panel.component.ts */\n.sc-adk-panel {\n  margin-top: 6px;\n  border: 1px solid color-mix(in srgb, var(--blue) 35%, var(--line));\n}\n.sc-adk-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 16px;\n  margin-bottom: 14px;\n  flex-wrap: wrap;\n}\n.sc-adk-title-group {\n  max-width: 720px;\n}\n.sc-adk-head h2 {\n  margin: 4px 0 6px;\n  font-size: 18px;\n}\n.sc-badge-row {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  flex-wrap: wrap;\n}\n.sc-adk-status-badge {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  font-size: 10px;\n  font-weight: 700;\n  color: var(--teal);\n  border: 1px solid var(--teal);\n  background: color-mix(in srgb, var(--teal) 10%, transparent);\n  padding: 2px 8px;\n  border-radius: 999px;\n}\n.pulse-dot-green {\n  width: 6px;\n  height: 6px;\n  border-radius: 50%;\n  background: var(--teal);\n  box-shadow: 0 0 6px var(--teal);\n  display: inline-block;\n}\n.sc-adk-actions {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n  flex-wrap: wrap;\n}\n.sc-toggle-btn {\n  all: unset;\n  box-sizing: border-box;\n  cursor: pointer;\n  font-size: 12px;\n  font-weight: 600;\n  padding: 7px 12px;\n  border-radius: 8px;\n  border: 1px solid var(--line);\n  color: var(--ink);\n  background: var(--card);\n}\n.sc-toggle-btn:hover {\n  border-color: var(--teal);\n  color: var(--teal);\n}\n.sc-external-link {\n  all: unset;\n  box-sizing: border-box;\n  cursor: pointer;\n  font-size: 12px;\n  font-weight: 600;\n  padding: 7px 12px;\n  border-radius: 8px;\n  border: 1px solid var(--blue);\n  color: var(--blue);\n  background: color-mix(in srgb, var(--blue) 8%, transparent);\n  text-decoration: none;\n}\n.sc-external-link:hover {\n  background: color-mix(in srgb, var(--blue) 18%, transparent);\n}\n.sc-sync-mini-btn {\n  font-size: 12px;\n  padding: 7px 14px;\n}\n.sc-iframe-container {\n  border: 1px solid var(--line);\n  border-radius: 10px;\n  overflow: hidden;\n  background: #121820;\n  display: flex;\n  flex-direction: column;\n  transition: height .3s ease;\n  height: 620px;\n}\n.sc-iframe-container.tall {\n  height: 850px;\n}\n.sc-iframe-bar {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 8px 14px;\n  background: #0b0f14;\n  border-bottom: 1px solid var(--line);\n  gap: 12px;\n}\n.sc-browser-dots {\n  display: flex;\n  gap: 6px;\n}\n.sc-browser-dots .dot {\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  display: inline-block;\n}\n.dot.red {\n  background: #ff5f56;\n}\n.dot.yellow {\n  background: #ffbd2e;\n}\n.dot.green {\n  background: #27c93f;\n}\n.sc-url-bar {\n  flex: 1;\n  max-width: 480px;\n  background: #17202a;\n  border-radius: 6px;\n  padding: 4px 10px;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 11px;\n}\n.lock-icon {\n  font-size: 11px;\n  opacity: .7;\n}\n.sc-url-bar code {\n  color: var(--teal);\n  font-family: monospace;\n}\n.sc-iframe-controls {\n  display: flex;\n  gap: 6px;\n}\n.sc-icon-btn {\n  all: unset;\n  box-sizing: border-box;\n  cursor: pointer;\n  font-size: 11px;\n  font-weight: 600;\n  padding: 4px 8px;\n  border-radius: 4px;\n  border: 1px solid var(--line);\n  color: var(--muted);\n}\n.sc-icon-btn:hover {\n  color: var(--ink);\n  border-color: var(--teal);\n}\n.sc-adk-iframe {\n  width: 100%;\n  flex: 1;\n  border: none;\n  background: #ffffff;\n}\n.sc-iframe-footer {\n  padding: 8px 14px;\n  background: #0b0f14;\n  border-top: 1px solid var(--line);\n  font-size: 11px;\n}\n.sc-hint {\n  color: var(--muted);\n  line-height: 1.4;\n}\n.sc-hint b,\n.sc-hint strong {\n  color: var(--ink);\n}\n.sc-hint code {\n  color: var(--teal);\n  background: rgba(0, 0, 0, 0.3);\n  padding: 1px 4px;\n  border-radius: 3px;\n  font-size: 10px;\n}\n.sc-collapsed-preview {\n  border: 1px dashed var(--line);\n  border-radius: 8px;\n  padding: 14px 18px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 16px;\n  cursor: pointer;\n  background: color-mix(in srgb, var(--card) 95%, transparent);\n  flex-wrap: wrap;\n}\n.sc-collapsed-preview:hover {\n  border-color: var(--blue);\n  background: color-mix(in srgb, var(--blue) 5%, var(--card));\n}\n.sc-preview-features {\n  display: flex;\n  gap: 20px;\n  flex-wrap: wrap;\n}\n.sc-feat-pill {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  font-size: 12px;\n}\n.sc-pill-icon {\n  font-size: 18px;\n}\n.sc-feat-pill strong {\n  display: block;\n  font-size: 12px;\n}\n.sc-feat-pill small {\n  color: var(--muted);\n  font-size: 11px;\n}\n.sc-launch-preview-btn {\n  all: unset;\n  box-sizing: border-box;\n  font-size: 11px;\n  font-weight: 700;\n  color: var(--blue);\n  text-transform: uppercase;\n  letter-spacing: .05em;\n}\n"] }]
+  }], null, { onSync: [{ type: Output, args: ["onSync"] }] });
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(AdkWebuiPanelComponent, { className: "AdkWebuiPanelComponent", filePath: "src/app/scorecard/adk-webui-panel.component.ts", lineNumber: 160 });
+})();
+
 // src/app/scorecard/scorecard.component.ts
 function ScorecardComponent_Conditional_11_Template(rf, ctx) {
   if (rf & 1) {
@@ -56666,7 +56937,7 @@ var ScorecardComponent = class _ScorecardComponent {
   static \u0275fac = function ScorecardComponent_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _ScorecardComponent)();
   };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ScorecardComponent, selectors: [["app-scorecard"]], decls: 30, vars: 17, consts: [[1, "page", "sc-page"], [1, "sc-head"], [1, "eyebrow"], [1, "sc-sync-note"], [1, "sc-head-actions"], ["type", "button", "title", "Import ADK Web UI eval results written under agents/<app>/.adk/eval_history", 1, "sc-sync-btn", 3, "click", "disabled"], ["type", "button", 1, "primary-btn", 3, "click", "disabled"], ["role", "alert", 1, "sc-error"], [3, "summary"], [3, "metrics"], [3, "currentCapability", "currentReliability", "currentCost"], [3, "calibrated"], [1, "sc-two"], [3, "metrics", "runs"], [3, "scorecard"], [3, "select", "breakdown", "selected"], [3, "runs"]], template: function ScorecardComponent_Template(rf, ctx) {
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ScorecardComponent, selectors: [["app-scorecard"]], decls: 31, vars: 17, consts: [[1, "page", "sc-page"], [1, "sc-head"], [1, "eyebrow"], [1, "sc-sync-note"], [1, "sc-head-actions"], ["type", "button", "title", "Import ADK Web UI eval results written under agents/<app>/.adk/eval_history", 1, "sc-sync-btn", 3, "click", "disabled"], ["type", "button", 1, "primary-btn", 3, "click", "disabled"], ["role", "alert", 1, "sc-error"], [3, "summary"], [3, "metrics"], [3, "onSync"], [3, "currentCapability", "currentReliability", "currentCost"], [3, "calibrated"], [1, "sc-two"], [3, "metrics", "runs"], [3, "scorecard"], [3, "select", "breakdown", "selected"], [3, "runs"]], template: function ScorecardComponent_Template(rf, ctx) {
     if (rf & 1) {
       \u0275\u0275elementStart(0, "section", 0)(1, "div", 1)(2, "div")(3, "div", 2);
       \u0275\u0275text(4, "PYREVIEW OBSERVABILITY ");
@@ -56694,23 +56965,29 @@ var ScorecardComponent = class _ScorecardComponent {
       \u0275\u0275text(16, "Refresh");
       \u0275\u0275elementEnd()()();
       \u0275\u0275conditionalCreate(17, ScorecardComponent_Conditional_17_Template, 2, 1, "p", 7);
-      \u0275\u0275element(18, "app-hero-stats", 8)(19, "app-tokenomics-dashboard", 9)(20, "app-behavior-studio", 10);
-      \u0275\u0275elementStart(21, "app-judge-calibration", 11);
-      \u0275\u0275listener("calibrated", function ScorecardComponent_Template_app_judge_calibration_calibrated_21_listener() {
+      \u0275\u0275element(18, "app-hero-stats", 8)(19, "app-tokenomics-dashboard", 9);
+      \u0275\u0275elementStart(20, "app-adk-webui-panel", 10);
+      \u0275\u0275listener("onSync", function ScorecardComponent_Template_app_adk_webui_panel_onSync_20_listener() {
+        return ctx.syncAdk();
+      });
+      \u0275\u0275elementEnd();
+      \u0275\u0275element(21, "app-behavior-studio", 11);
+      \u0275\u0275elementStart(22, "app-judge-calibration", 12);
+      \u0275\u0275listener("calibrated", function ScorecardComponent_Template_app_judge_calibration_calibrated_22_listener() {
         return ctx.load();
       });
       \u0275\u0275elementEnd();
-      \u0275\u0275element(22, "app-metric-explainer")(23, "app-reliability-quadrant", 9);
-      \u0275\u0275elementStart(24, "div", 12);
-      \u0275\u0275element(25, "app-adaptability-grid", 9)(26, "app-efficiency-metrics", 13);
+      \u0275\u0275element(23, "app-metric-explainer")(24, "app-reliability-quadrant", 9);
+      \u0275\u0275elementStart(25, "div", 13);
+      \u0275\u0275element(26, "app-adaptability-grid", 9)(27, "app-efficiency-metrics", 14);
       \u0275\u0275elementEnd();
-      \u0275\u0275element(27, "app-kpi-mapping", 14);
-      \u0275\u0275elementStart(28, "app-source-comparison", 15);
-      \u0275\u0275listener("select", function ScorecardComponent_Template_app_source_comparison_select_28_listener($event) {
+      \u0275\u0275element(28, "app-kpi-mapping", 15);
+      \u0275\u0275elementStart(29, "app-source-comparison", 16);
+      \u0275\u0275listener("select", function ScorecardComponent_Template_app_source_comparison_select_29_listener($event) {
         return ctx.setSource($event);
       });
       \u0275\u0275elementEnd();
-      \u0275\u0275element(29, "app-trajectory-logs", 16);
+      \u0275\u0275element(30, "app-trajectory-logs", 17);
       \u0275\u0275elementEnd();
     }
     if (rf & 2) {
@@ -56729,7 +57006,7 @@ var ScorecardComponent = class _ScorecardComponent {
       \u0275\u0275property("summary", ctx.summary());
       \u0275\u0275advance();
       \u0275\u0275property("metrics", ctx.efficiency());
-      \u0275\u0275advance();
+      \u0275\u0275advance(2);
       \u0275\u0275property("currentCapability", ((tmp_6_0 = ctx.summary()) == null ? null : tmp_6_0.capability_score) ?? 25)("currentReliability", ((tmp_7_0 = ctx.summary()) == null ? null : tmp_7_0.reliability_index) ?? 65)("currentCost", ((tmp_8_0 = ctx.efficiency()) == null ? null : tmp_8_0.cost_usd_per_task) ?? 3e-3);
       \u0275\u0275advance(3);
       \u0275\u0275property("metrics", ctx.reliability());
@@ -56755,7 +57032,8 @@ var ScorecardComponent = class _ScorecardComponent {
     JudgeCalibrationComponent,
     MetricExplainerComponent,
     BehaviorStudioComponent,
-    TokenomicsDashboardComponent
+    TokenomicsDashboardComponent,
+    AdkWebuiPanelComponent
   ], styles: ["/* angular:styles/component:css;f7e06cf9c59fc972cead22916083365aff8428df8bca08975cbcba5236c0693f;C:/Coding_learning/pyengineer_ang/PyReviewAngular/src/app/scorecard/scorecard.component.ts */\n.sc-page {\n  display: grid;\n  gap: 20px;\n}\n.sc-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: end;\n  gap: 16px;\n}\n.sc-head h1 {\n  margin: 0;\n}\n.sc-head p {\n  margin: 4px 0 0;\n  color: var(--muted);\n}\n.sc-card {\n  background: var(--card);\n  border: 1px solid var(--line);\n  border-radius: 10px;\n  padding: 18px;\n  min-width: 0;\n}\n.sc-card h2 {\n  margin: 0 0 14px;\n  font-size: 16px;\n}\n.sc-kicker {\n  color: var(--muted);\n  font-size: 11px;\n  letter-spacing: .08em;\n  text-transform: uppercase;\n}\n.sc-muted {\n  color: var(--muted);\n  font-size: 12px;\n}\n.sc-error {\n  color: var(--coral);\n}\n.sc-hero {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1.3fr;\n  gap: 16px;\n}\n.sc-gauge {\n  display: flex;\n  align-items: center;\n  gap: 16px;\n}\n.sc-gauge svg {\n  width: 130px;\n  flex: none;\n}\n.sc-gauge p {\n  margin: 6px 0 0;\n  color: var(--muted);\n  font-size: 12px;\n}\n.sc-ring-bg {\n  fill: none;\n  stroke: var(--line);\n  stroke-width: 12;\n}\n.sc-ring-fg {\n  fill: none;\n  stroke-width: 12;\n  stroke-linecap: round;\n  transition: stroke-dashoffset .6s ease;\n}\n.sc-ring-value {\n  fill: var(--ink);\n  font-size: 30px;\n  font-weight: 700;\n}\n.sc-dna dl {\n  display: grid;\n  grid-template-columns: auto 1fr;\n  gap: 6px 14px;\n  margin: 10px 0 0;\n  font-size: 13px;\n}\n.sc-dna dt {\n  color: var(--muted);\n}\n.sc-dna dd {\n  margin: 0;\n  overflow-wrap: anywhere;\n}\n.sc-quadrant {\n  display: grid;\n  grid-template-columns: minmax(180px, 260px) 1fr;\n  gap: 20px;\n  align-items: center;\n}\n.sc-radar-grid {\n  fill: none;\n  stroke: var(--line);\n  stroke-width: 1;\n}\n.sc-radar-shape {\n  fill: color-mix(in srgb, var(--teal) 30%, transparent);\n  stroke: var(--teal);\n  stroke-width: 2;\n}\n.sc-radar-label {\n  fill: var(--muted);\n  font-size: 8px;\n}\n.sc-quad-grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 10px;\n}\n.sc-quad-cell {\n  border: 1px solid var(--line);\n  border-radius: 8px;\n  padding: 10px;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n}\n.sc-quad-cell strong {\n  font-size: 24px;\n}\n.sc-quad-cell small {\n  color: var(--muted);\n  font-size: 11px;\n}\n.sc-heatmap {\n  display: grid;\n  grid-template-columns: repeat(5, 1fr);\n  gap: 10px;\n}\n.sc-heat-cell {\n  border: 1px solid var(--line);\n  border-radius: 8px;\n  padding: 12px;\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  background: color-mix(in srgb, var(--teal) calc(var(--heat, 0) * 28%), var(--card));\n}\n.sc-heat-cell strong {\n  font-size: 22px;\n}\n.sc-heat-cell small {\n  color: var(--muted);\n  font-size: 11px;\n}\n.sc-bar {\n  height: 6px;\n  background: var(--line);\n  border-radius: 3px;\n  overflow: hidden;\n}\n.sc-bar span {\n  display: block;\n  height: 100%;\n  background: var(--teal);\n}\n.sc-table {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: 13px;\n}\n.sc-table th,\n.sc-table td {\n  text-align: left;\n  padding: 8px 10px;\n  border-bottom: 1px solid var(--line);\n}\n.sc-table th {\n  color: var(--muted);\n  font-weight: 500;\n  font-size: 11px;\n  text-transform: uppercase;\n  letter-spacing: .06em;\n}\n.sc-spark {\n  width: 100px;\n  height: 24px;\n}\n.sc-spark polyline {\n  fill: none;\n  stroke: var(--teal);\n  stroke-width: 1.5;\n  vector-effect: non-scaling-stroke;\n}\n.sc-session {\n  border: 1px solid var(--line);\n  border-radius: 8px;\n  margin-bottom: 8px;\n  overflow: hidden;\n}\n.sc-session-head {\n  all: unset;\n  box-sizing: border-box;\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  width: 100%;\n  padding: 10px 14px;\n  cursor: pointer;\n}\n.sc-session-head:hover,\n.sc-session-head:focus-visible {\n  background: color-mix(in srgb, var(--teal) 8%, transparent);\n}\n.sc-session-name {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.sc-session-body {\n  padding: 4px 14px 14px;\n  border-top: 1px solid var(--line);\n}\n.sc-step {\n  border-left: 3px solid var(--teal);\n  padding: 4px 0 4px 12px;\n  margin: 10px 0;\n}\n.sc-step-head {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  flex-wrap: wrap;\n}\n.sc-step pre {\n  margin: 6px 0;\n  font-size: 11px;\n  white-space: pre-wrap;\n  color: var(--muted);\n}\n.sc-step p {\n  margin: 0;\n  font-size: 13px;\n}\n.sc-pill {\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: .06em;\n  text-transform: uppercase;\n  padding: 2px 8px;\n  border-radius: 999px;\n  border: 1px solid var(--line);\n}\n.sc-pill.passed {\n  color: var(--teal);\n  border-color: var(--teal);\n}\n.sc-pill.failed {\n  color: var(--coral);\n  border-color: var(--coral);\n}\n.sc-pill.blocked {\n  color: var(--amber);\n  border-color: var(--amber);\n}\n.sc-pill.verifier.hard {\n  color: var(--blue);\n  border-color: var(--blue);\n}\n.sc-pill.verifier.soft {\n  color: var(--magenta);\n  border-color: var(--magenta);\n}\n.sc-pill.verifier.hybrid {\n  color: var(--amber);\n  border-color: var(--amber);\n}\n.sc-src-pill {\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: .05em;\n  text-transform: uppercase;\n  padding: 2px 8px;\n  border-radius: 999px;\n  border: 1px solid var(--line);\n  white-space: nowrap;\n}\n.sc-src-pill.agent_lab {\n  color: var(--teal);\n  border-color: var(--teal);\n}\n.sc-src-pill.adk_eval {\n  color: var(--blue);\n  border-color: var(--blue);\n}\n.sc-src-pill.code_review {\n  color: var(--magenta);\n  border-color: var(--magenta);\n}\n.sc-src-pill.all {\n  color: var(--ink);\n  border-color: var(--ink);\n}\n.sc-tabs {\n  display: flex;\n  gap: 6px;\n  flex-wrap: wrap;\n}\n.sc-tab {\n  all: unset;\n  box-sizing: border-box;\n  cursor: pointer;\n  font-size: 12px;\n  font-weight: 600;\n  padding: 6px 14px;\n  border-radius: 999px;\n  border: 1px solid var(--line);\n  color: var(--muted);\n}\n.sc-tab:hover,\n.sc-tab:focus-visible {\n  color: var(--ink);\n}\n.sc-tab.active {\n  color: var(--ink);\n  border-color: var(--teal);\n  background: color-mix(in srgb, var(--teal) 12%, transparent);\n}\n.sc-compare {\n  overflow-x: auto;\n}\n.sc-compare-row {\n  cursor: pointer;\n}\n.sc-compare-row.selected td {\n  background: color-mix(in srgb, var(--teal) 7%, transparent);\n}\n.sc-compare-row:hover td {\n  background: color-mix(in srgb, var(--teal) 5%, transparent);\n}\n.sc-metric-table {\n  margin-bottom: 14px;\n}\n.sc-sync-note {\n  color: var(--teal);\n  font-size: 12px;\n  margin: 6px 0 0;\n}\n.sc-head-actions {\n  display: flex;\n  gap: 10px;\n  align-items: center;\n  flex-wrap: wrap;\n}\n.sc-sync-btn {\n  all: unset;\n  box-sizing: border-box;\n  cursor: pointer;\n  font-size: 12px;\n  font-weight: 600;\n  padding: 8px 14px;\n  border-radius: 8px;\n  border: 1px solid var(--line);\n  color: var(--ink);\n}\n.sc-sync-btn:hover:not(:disabled),\n.sc-sync-btn:focus-visible:not(:disabled) {\n  border-color: var(--teal);\n  color: var(--teal);\n}\n.sc-sync-btn:disabled {\n  opacity: .5;\n  cursor: default;\n}\n.sc-kpi-intro {\n  margin: -6px 0 14px;\n}\n.sc-kpi-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));\n  gap: 12px;\n}\n.sc-kpi {\n  border: 1px solid var(--line);\n  border-radius: 8px;\n  padding: 14px;\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  border-top: 3px solid var(--line);\n}\n.sc-kpi.met {\n  border-top-color: var(--teal);\n}\n.sc-kpi.at_risk {\n  border-top-color: var(--amber);\n}\n.sc-kpi.missed {\n  border-top-color: var(--coral);\n}\n.sc-kpi header {\n  display: flex;\n  justify-content: space-between;\n  gap: 8px;\n  align-items: center;\n}\n.sc-kpi-status {\n  font-size: 10px;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: .05em;\n}\n.sc-kpi-status.met {\n  color: var(--teal);\n}\n.sc-kpi-status.at_risk {\n  color: var(--amber);\n}\n.sc-kpi-status.missed {\n  color: var(--coral);\n}\n.sc-kpi-status.no_data {\n  color: var(--muted);\n}\n.sc-kpi-value {\n  font-size: 28px;\n  font-weight: 700;\n}\n.sc-kpi-value small {\n  font-size: 11px;\n  font-weight: 400;\n  color: var(--muted);\n  margin-left: 6px;\n}\n.sc-kpi-bar {\n  position: relative;\n  overflow: visible;\n}\n.sc-kpi-bar i {\n  position: absolute;\n  top: -3px;\n  bottom: -3px;\n  width: 2px;\n  background: var(--ink);\n}\n.sc-kpi p {\n  margin: 0;\n}\n.sc-kpi ul {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  display: grid;\n  gap: 4px;\n  font-size: 12px;\n}\n.sc-kpi li {\n  display: grid;\n  grid-template-columns: 1fr auto auto;\n  gap: 8px;\n  align-items: baseline;\n}\n.sc-kpi li.context {\n  color: var(--muted);\n}\n.sc-kpi li em {\n  font-size: 10px;\n}\n.sc-kpi li small {\n  color: var(--muted);\n  font-size: 10px;\n}\n.sc-cal-head {\n  display: flex;\n  justify-content: space-between;\n  gap: 16px;\n  align-items: start;\n  flex-wrap: wrap;\n}\n.sc-cal-head h2 {\n  margin-bottom: 4px;\n}\n.sc-cal-head p {\n  margin: 0;\n  max-width: 640px;\n}\n.sc-cal-actions {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n}\n.sc-select {\n  background: var(--card);\n  color: var(--ink);\n  border: 1px solid var(--line);\n  border-radius: 8px;\n  padding: 8px 10px;\n}\n.sc-judge-info {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n  flex-wrap: wrap;\n  margin: 12px 0 6px;\n}\n.sc-criteria {\n  list-style: none;\n  margin: 0 0 14px;\n  padding: 0;\n  display: flex;\n  gap: 8px;\n  flex-wrap: wrap;\n  font-size: 12px;\n}\n.sc-criteria li {\n  border: 1px solid var(--line);\n  border-radius: 999px;\n  padding: 3px 10px;\n  display: flex;\n  gap: 8px;\n}\n.sc-cal-summary {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));\n  gap: 10px;\n  margin: 12px 0 6px;\n}\n.sc-cal-summary > div {\n  border: 1px solid var(--line);\n  border-radius: 8px;\n  padding: 10px;\n  display: flex;\n  flex-direction: column;\n  gap: 3px;\n}\n.sc-cal-summary strong {\n  font-size: 18px;\n}\n.sc-cal-summary small {\n  color: var(--muted);\n  font-size: 11px;\n}\n.sc-cal-body {\n  display: grid;\n  grid-template-columns: 1fr minmax(220px, 280px);\n  gap: 20px;\n  align-items: start;\n  margin-top: 8px;\n}\n.sc-cal-body h3,\n.sc-cal h3,\n.sc-card h3 {\n  font-size: 13px;\n  margin: 12px 0 8px;\n}\n.sc-round-selected td {\n  background: color-mix(in srgb, var(--teal) 10%, transparent);\n  font-weight: 600;\n}\n.sc-round-selected em {\n  color: var(--teal);\n  font-size: 10px;\n}\n.sc-plot {\n  margin: 0;\n}\n.sc-plot svg {\n  width: 100%;\n}\n.sc-plot figcaption {\n  font-size: 11px;\n  line-height: 1.5;\n}\n.sc-plot-frame {\n  fill: none;\n  stroke: var(--line);\n}\n.sc-plot-diagonal {\n  stroke: var(--muted);\n  stroke-dasharray: 3 3;\n}\n.sc-plot-move {\n  stroke: var(--line);\n  stroke-width: 1;\n}\n.sc-plot-raw {\n  fill: none;\n  stroke: var(--muted);\n}\n.sc-plot-cal.train {\n  fill: var(--teal);\n}\n.sc-plot-cal.validation {\n  fill: var(--magenta);\n}\n.sc-dot {\n  display: inline-block;\n  width: 8px;\n  height: 8px;\n  border-radius: 50%;\n  margin: 0 4px 0 8px;\n  border: 1px solid var(--muted);\n}\n.sc-dot.train {\n  background: var(--teal);\n  border-color: var(--teal);\n}\n.sc-dot.validation {\n  background: var(--magenta);\n  border-color: var(--magenta);\n}\n.sc-judge-card {\n  border: 1px solid var(--line);\n  border-radius: 8px;\n  padding: 12px;\n  margin: 8px 0 14px;\n  display: grid;\n  gap: 6px;\n}\n.sc-judge-head {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n  flex-wrap: wrap;\n}\n.sc-judge-row {\n  display: grid;\n  grid-template-columns: 190px 1fr 36px;\n  gap: 10px;\n  align-items: center;\n  font-size: 12px;\n  text-transform: capitalize;\n}\n.sc-judge-card p {\n  margin: 0;\n}\n.sc-two {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 16px;\n}\n@media (max-width: 900px) {\n  .sc-hero,\n  .sc-two,\n  .sc-quadrant,\n  .sc-cal-body {\n    grid-template-columns: 1fr;\n  }\n  .sc-heatmap {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}\n"], encapsulation: 2 });
 };
 (() => {
@@ -56772,7 +57050,8 @@ var ScorecardComponent = class _ScorecardComponent {
       JudgeCalibrationComponent,
       MetricExplainerComponent,
       BehaviorStudioComponent,
-      TokenomicsDashboardComponent
+      TokenomicsDashboardComponent,
+      AdkWebuiPanelComponent
     ], template: `
     <section class="page sc-page">
       <div class="sc-head">
@@ -56794,6 +57073,7 @@ var ScorecardComponent = class _ScorecardComponent {
 
       <app-hero-stats [summary]="summary()" />
       <app-tokenomics-dashboard [metrics]="efficiency()" />
+      <app-adk-webui-panel (onSync)="syncAdk()" />
       <app-behavior-studio [currentCapability]="summary()?.capability_score ?? 25" [currentReliability]="summary()?.reliability_index ?? 65" [currentCost]="efficiency()?.cost_usd_per_task ?? 0.003" />
       <app-judge-calibration (calibrated)="load()" />
       <app-metric-explainer />
@@ -56810,7 +57090,7 @@ var ScorecardComponent = class _ScorecardComponent {
   }], null, null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ScorecardComponent, { className: "ScorecardComponent", filePath: "src/app/scorecard/scorecard.component.ts", lineNumber: 213 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ScorecardComponent, { className: "ScorecardComponent", filePath: "src/app/scorecard/scorecard.component.ts", lineNumber: 216 });
 })();
 
 // src/app/app.routes.ts
