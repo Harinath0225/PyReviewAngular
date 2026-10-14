@@ -42545,7 +42545,7 @@ var AppComponent = class _AppComponent {
   static \u0275fac = function AppComponent_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _AppComponent)();
   };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _AppComponent, selectors: [["app-root"]], decls: 36, vars: 2, consts: [[1, "topbar"], ["routerLink", "/", 1, "brand"], [1, "brand-mark"], [1, "brand-copy"], ["aria-label", "Primary navigation"], ["routerLink", "/", "routerLinkActive", "active", 3, "routerLinkActiveOptions"], [1, "material-symbols-outlined"], ["routerLink", "/history", "routerLinkActive", "active"], ["routerLink", "/scorecard", "routerLinkActive", "active"], [1, "topbar-tools"], [1, "status"], [1, "status-dot"]], template: function AppComponent_Template(rf, ctx) {
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _AppComponent, selectors: [["app-root"]], decls: 41, vars: 2, consts: [[1, "topbar"], ["routerLink", "/", 1, "brand"], [1, "brand-mark"], [1, "brand-copy"], ["aria-label", "Primary navigation"], ["routerLink", "/", "routerLinkActive", "active", 3, "routerLinkActiveOptions"], [1, "material-symbols-outlined"], ["routerLink", "/history", "routerLinkActive", "active"], ["routerLink", "/scorecard", "routerLinkActive", "active"], ["routerLink", "/cognitive-debt", "routerLinkActive", "active"], [1, "topbar-tools"], [1, "status"], [1, "status-dot"]], template: function AppComponent_Template(rf, ctx) {
     if (rf & 1) {
       \u0275\u0275elementStart(0, "header", 0)(1, "a", 1)(2, "span", 2);
       \u0275\u0275text(3, "P");
@@ -42573,19 +42573,25 @@ var AppComponent = class _AppComponent {
       \u0275\u0275elementEnd();
       \u0275\u0275elementStart(23, "span");
       \u0275\u0275text(24, "Agent Scorecard");
-      \u0275\u0275elementEnd()()();
-      \u0275\u0275elementStart(25, "div", 9)(26, "div", 10);
-      \u0275\u0275element(27, "span", 11);
-      \u0275\u0275text(28, " API connected");
-      \u0275\u0275elementEnd()()();
-      \u0275\u0275elementStart(29, "main");
-      \u0275\u0275element(30, "router-outlet");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(25, "a", 9)(26, "i", 6);
+      \u0275\u0275text(27, "psychology_alt");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(31, "footer")(32, "span");
-      \u0275\u0275text(33, "PYREVIEW / REVIEW ENGINE");
+      \u0275\u0275elementStart(28, "span");
+      \u0275\u0275text(29, "Cognitive Debt Gate");
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(30, "div", 10)(31, "div", 11);
+      \u0275\u0275element(32, "span", 12);
+      \u0275\u0275text(33, " API connected");
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(34, "main");
+      \u0275\u0275element(35, "router-outlet");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(34, "span");
-      \u0275\u0275text(35, "Built for thoughtful code");
+      \u0275\u0275elementStart(36, "footer")(37, "span");
+      \u0275\u0275text(38, "PYREVIEW / REVIEW ENGINE");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(39, "span");
+      \u0275\u0275text(40, "Built for thoughtful code");
       \u0275\u0275elementEnd()();
     }
     if (rf & 2) {
@@ -42604,7 +42610,7 @@ var AppComponent = class _AppComponent {
       template: `
     <header class="topbar">
       <a class="brand" routerLink="/"><span class="brand-mark">P</span><span class="brand-copy"><strong>PyReview</strong><small>by PyNgineers</small></span></a>
-      <nav aria-label="Primary navigation"><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i class="material-symbols-outlined">edit_note</i><span>New review</span></a><a routerLink="/history" routerLinkActive="active"><i class="material-symbols-outlined">history</i><span>History</span></a><a routerLink="/scorecard" routerLinkActive="active"><i class="material-symbols-outlined">monitoring</i><span>Agent Scorecard</span></a></nav>
+      <nav aria-label="Primary navigation"><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i class="material-symbols-outlined">edit_note</i><span>New review</span></a><a routerLink="/history" routerLinkActive="active"><i class="material-symbols-outlined">history</i><span>History</span></a><a routerLink="/scorecard" routerLinkActive="active"><i class="material-symbols-outlined">monitoring</i><span>Agent Scorecard</span></a><a routerLink="/cognitive-debt" routerLinkActive="active"><i class="material-symbols-outlined">psychology_alt</i><span>Cognitive Debt Gate</span></a></nav>
       <div class="topbar-tools"><div class="status"><span class="status-dot"></span> API connected</div></div>
     </header>
     <main><router-outlet /></main>
@@ -49174,6 +49180,999 @@ var ReactiveFormsModule = class _ReactiveFormsModule {
   }], null, null);
 })();
 
+// src/app/cognitive-debt.service.ts
+var CognitiveDebtService = class _CognitiveDebtService {
+  http = inject2(HttpClient);
+  baseUrl = "http://localhost:8000/api/v1/cognitive-debt";
+  getSamples() {
+    return this.http.get(`${this.baseUrl}/samples`);
+  }
+  analyze(diffText, prBody = "") {
+    return this.http.post(`${this.baseUrl}/analyze`, {
+      diff_text: diffText,
+      pr_body: prBody,
+      extract_decisions: true
+    });
+  }
+  explain(diffText, question, authorReply, telemetry, payload) {
+    return this.http.post(`${this.baseUrl}/explain`, {
+      diff_text: diffText,
+      question,
+      author_reply: authorReply,
+      telemetry,
+      payload
+    });
+  }
+  static \u0275fac = function CognitiveDebtService_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _CognitiveDebtService)();
+  };
+  static \u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _CognitiveDebtService, factory: _CognitiveDebtService.\u0275fac, providedIn: "root" });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(CognitiveDebtService, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], null, null);
+})();
+
+// src/app/cognitive-debt.component.ts
+var _c03 = (a0, a1) => ({ "badge-warn": a0, "badge-ok": a1 });
+var _c1 = (a0) => ({ "card-unlocked": a0 });
+function CognitiveDebtComponent_Conditional_53_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275element(0, "span", 21);
+    \u0275\u0275elementStart(1, "span");
+    \u0275\u0275text(2, "Running AST Scorer & LLM Decision Extractor...");
+    \u0275\u0275elementEnd();
+  }
+}
+function CognitiveDebtComponent_Conditional_54_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "i", 5);
+    \u0275\u0275text(1, "psychology");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(2, "span");
+    \u0275\u0275text(3, "Analyze Cognitive Debt");
+    \u0275\u0275elementEnd();
+  }
+}
+function CognitiveDebtComponent_Conditional_55_Conditional_20_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 31)(1, "span", 62);
+    \u0275\u0275text(2, "\u{1F6A8} BLOCKED");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "i", 5);
+    \u0275\u0275text(4, "arrow_forward");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "span", 63);
+    \u0275\u0275text(6);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const res_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(5);
+    \u0275\u0275classProp("unlocked", res_r2.verdict.approved);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", res_r2.verdict.approved ? "\u2705 UNLOCKED" : "\u{1F6A8} STILL BLOCKED", " ");
+  }
+}
+function CognitiveDebtComponent_Conditional_55_For_89_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 45)(1, "div", 64)(2, "span", 65);
+    \u0275\u0275text(3);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "strong", 66);
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "span", 67);
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(8, "div", 68)(9, "div", 69)(10, "span", 70);
+    \u0275\u0275text(11, "Hidden Assumption");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "p");
+    \u0275\u0275text(13);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(14, "div", 71)(15, "span", 70);
+    \u0275\u0275text(16, "Production Failure Risk");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(17, "p");
+    \u0275\u0275text(18);
+    \u0275\u0275elementEnd()()()();
+  }
+  if (rf & 2) {
+    const dec_r3 = ctx.$implicit;
+    const $index_r4 = ctx.$index;
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate1("#", $index_r4 + 1);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(dec_r3.title);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(dec_r3.file_and_line);
+    \u0275\u0275advance(6);
+    \u0275\u0275textInterpolate(dec_r3.hidden_assumption);
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate(dec_r3.production_risk);
+  }
+}
+function CognitiveDebtComponent_Conditional_55_Conditional_129_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275element(0, "span", 21);
+    \u0275\u0275elementStart(1, "span");
+    \u0275\u0275text(2, "Evaluating with LLM Gate Judge...");
+    \u0275\u0275elementEnd();
+  }
+}
+function CognitiveDebtComponent_Conditional_55_Conditional_130_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "i", 5);
+    \u0275\u0275text(1, "gavel");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(2, "span");
+    \u0275\u0275text(3, "Submit /explain to Judge");
+    \u0275\u0275elementEnd();
+  }
+}
+function CognitiveDebtComponent_Conditional_55_Conditional_131_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 58)(1, "div", 72)(2, "i", 5);
+    \u0275\u0275text(3);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "strong");
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "p", 73);
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "div", 74);
+    \u0275\u0275text(9, " GitHub PR Status Check: ");
+    \u0275\u0275elementStart(10, "strong");
+    \u0275\u0275text(11);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const res_r2 = \u0275\u0275nextContext();
+    \u0275\u0275property("ngClass", res_r2.verdict.approved ? "verdict-approved" : "verdict-rejected");
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate1(" ", res_r2.verdict.approved ? "verified" : "error", " ");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate1(" ", res_r2.verdict.approved ? "PR Gate Unlocked: Author Rationale Accepted" : "PR Gate Blocked: Explanation Rejected", " ");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(res_r2.verdict.feedback);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(res_r2.verdict.approved ? "SUCCESS (Exit Code 0)" : "FAILURE (Exit Code 1)");
+  }
+}
+function CognitiveDebtComponent_Conditional_55_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r1 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 20)(1, "div", 22)(2, "div", 23)(3, "span", 24);
+    \u0275\u0275text(4, "COMPOSITE COGNITIVE DEBT INDEX");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "div", 25)(6, "strong");
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "small");
+    \u0275\u0275text(9, "/ 100");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(10, "div", 26);
+    \u0275\u0275element(11, "div", 27);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(12, "div", 28)(13, "div", 29)(14, "i", 5);
+    \u0275\u0275text(15);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(16, "span");
+    \u0275\u0275text(17);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(18, "p", 30);
+    \u0275\u0275text(19);
+    \u0275\u0275elementEnd();
+    \u0275\u0275conditionalCreate(20, CognitiveDebtComponent_Conditional_55_Conditional_20_Template, 7, 3, "div", 31);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(21, "div", 32)(22, "div", 33)(23, "div", 34)(24, "i", 35);
+    \u0275\u0275text(25, "account_tree");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(26, "span", 36);
+    \u0275\u0275text(27, "AST Nesting Complexity");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(28, "div", 37)(29, "strong", 38);
+    \u0275\u0275text(30);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(31, "span", 39);
+    \u0275\u0275text(32);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(33, "p", 40);
+    \u0275\u0275text(34, " Calculated via native ");
+    \u0275\u0275elementStart(35, "code");
+    \u0275\u0275text(36, "ast.walk()");
+    \u0275\u0275elementEnd();
+    \u0275\u0275text(37, ": +1 for control nodes, +2 penalty for each nesting depth level > 2. ");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(38, "div", 33)(39, "div", 34)(40, "i", 35);
+    \u0275\u0275text(41, "history_edu");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(42, "span", 36);
+    \u0275\u0275text(43, "Undocumented Logic Burst");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(44, "div", 37)(45, "strong", 38);
+    \u0275\u0275text(46);
+    \u0275\u0275elementStart(47, "small");
+    \u0275\u0275text(48, "LOC");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(49, "span", 39);
+    \u0275\u0275text(50);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(51, "p", 40);
+    \u0275\u0275text(52, " Added executable lines. Multiplier: ");
+    \u0275\u0275elementStart(53, "strong");
+    \u0275\u0275text(54);
+    \u0275\u0275elementEnd();
+    \u0275\u0275text(55, ". ");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(56, "div", 33)(57, "div", 34)(58, "i", 35);
+    \u0275\u0275text(59, "quiz");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(60, "span", 36);
+    \u0275\u0275text(61, "Test Tautology (Mock Ratio)");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(62, "div", 37)(63, "strong", 38);
+    \u0275\u0275text(64);
+    \u0275\u0275pipe(65, "number");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(66, "span", 39);
+    \u0275\u0275text(67);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(68, "p", 40);
+    \u0275\u0275text(69, " Ratio of tautological ");
+    \u0275\u0275elementStart(70, "code");
+    \u0275\u0275text(71, "assert_called*");
+    \u0275\u0275elementEnd();
+    \u0275\u0275text(72, " mock invocations vs verified output ");
+    \u0275\u0275elementStart(73, "code");
+    \u0275\u0275text(74, "ast.Assert");
+    \u0275\u0275elementEnd();
+    \u0275\u0275text(75, " statements. ");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(76, "div", 41)(77, "div", 9)(78, "div", 10)(79, "i", 5);
+    \u0275\u0275text(80, "smart_toy");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(81, "strong");
+    \u0275\u0275text(82, "\u{1F9E0} What Your Coding Agent Decided For You");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(83, "span", 42);
+    \u0275\u0275text(84);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(85, "p", 43);
+    \u0275\u0275text(86, " The AI coding agent implemented these critical architectural decisions without documentation in the PR description: ");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(87, "div", 44);
+    \u0275\u0275repeaterCreate(88, CognitiveDebtComponent_Conditional_55_For_89_Template, 19, 5, "div", 45, \u0275\u0275repeaterTrackByIndex);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(90, "div", 46)(91, "div", 9)(92, "div", 10)(93, "i", 5);
+    \u0275\u0275text(94);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(95, "strong");
+    \u0275\u0275text(96, "\u{1F510} Socratic Gatekeeper Challenge");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(97, "span", 11);
+    \u0275\u0275text(98);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(99, "div", 47)(100, "div", 48);
+    \u0275\u0275text(101, "CHALLENGE QUESTION FOR THE AUTHOR:");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(102, "blockquote", 49);
+    \u0275\u0275text(103);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(104, "div", 50);
+    \u0275\u0275text(105, " To unlock this pull request, the developer must justify the design tradeoff by replying with ");
+    \u0275\u0275elementStart(106, "code");
+    \u0275\u0275text(107, "/explain <your rationale>");
+    \u0275\u0275elementEnd();
+    \u0275\u0275text(108, ". ");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(109, "div", 51)(110, "label", 52)(111, "strong");
+    \u0275\u0275text(112, "Author Reply:");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(113, "small");
+    \u0275\u0275text(114, "Enter your technical rationale below or click a quick-demo button");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(115, "div", 53)(116, "button", 54);
+    \u0275\u0275listener("click", function CognitiveDebtComponent_Conditional_55_Template_button_click_116_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r4 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r4.setQuickReply("handwavy"));
+    });
+    \u0275\u0275elementStart(117, "i", 5);
+    \u0275\u0275text(118, "cancel");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(119, "span");
+    \u0275\u0275text(120, "Test Hand-Wavy Reply (Rejected)");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(121, "button", 55);
+    \u0275\u0275listener("click", function CognitiveDebtComponent_Conditional_55_Template_button_click_121_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r4 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r4.setQuickReply("solid"));
+    });
+    \u0275\u0275elementStart(122, "i", 5);
+    \u0275\u0275text(123, "check_circle");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(124, "span");
+    \u0275\u0275text(125, "Test Architectural Reply (Unlocked)");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(126, "textarea", 56);
+    \u0275\u0275twoWayListener("ngModelChange", function CognitiveDebtComponent_Conditional_55_Template_textarea_ngModelChange_126_listener($event) {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r4 = \u0275\u0275nextContext();
+      \u0275\u0275twoWayBindingSet(ctx_r4.authorReply, $event) || (ctx_r4.authorReply = $event);
+      return \u0275\u0275resetView($event);
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(127, "div", 57)(128, "button", 19);
+    \u0275\u0275listener("click", function CognitiveDebtComponent_Conditional_55_Template_button_click_128_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r4 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r4.submitExplanation());
+    });
+    \u0275\u0275conditionalCreate(129, CognitiveDebtComponent_Conditional_55_Conditional_129_Template, 3, 0)(130, CognitiveDebtComponent_Conditional_55_Conditional_130_Template, 4, 0);
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275conditionalCreate(131, CognitiveDebtComponent_Conditional_55_Conditional_131_Template, 12, 5, "div", 58);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(132, "div", 59)(133, "div", 9)(134, "div", 10)(135, "i", 5);
+    \u0275\u0275text(136, "markdown");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(137, "strong");
+    \u0275\u0275text(138, "GitHub PR Comment Preview (Stateless Tag Embedded)");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(139, "button", 60);
+    \u0275\u0275listener("click", function CognitiveDebtComponent_Conditional_55_Template_button_click_139_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r4 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r4.copyComment());
+    });
+    \u0275\u0275elementStart(140, "i", 5);
+    \u0275\u0275text(141, "content_copy");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(142, "span");
+    \u0275\u0275text(143);
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(144, "pre", 61)(145, "code");
+    \u0275\u0275text(146);
+    \u0275\u0275elementEnd()()()();
+  }
+  if (rf & 2) {
+    const res_r2 = ctx;
+    const ctx_r4 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275property("ngClass", ctx_r4.gateStatusClass());
+    \u0275\u0275advance(6);
+    \u0275\u0275textInterpolate(res_r2.telemetry.cdi_score);
+    \u0275\u0275advance(4);
+    \u0275\u0275styleProp("width", res_r2.telemetry.cdi_score, "%");
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngClass", ctx_r4.gateStatusClass());
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r4.gateStatusIcon());
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r4.gateStatusTitle());
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r4.gateStatusMessage());
+    \u0275\u0275advance();
+    \u0275\u0275conditional(res_r2.verdict ? 20 : -1);
+    \u0275\u0275advance(10);
+    \u0275\u0275textInterpolate(res_r2.telemetry.max_nesting_score);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate1("", ctx_r4.cdiPts(res_r2).c_pts, " / 40 pts");
+    \u0275\u0275advance(14);
+    \u0275\u0275textInterpolate1("", res_r2.telemetry.net_new_logic_loc, " ");
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate1("", ctx_r4.cdiPts(res_r2).l_pts, " / 35 pts");
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r4.bodyWordCount() < 30 ? "1.5x (Body < 30 words)" : "1.0x (Described)");
+    \u0275\u0275advance(10);
+    \u0275\u0275textInterpolate1("", \u0275\u0275pipeBind2(65, 28, res_r2.telemetry.mock_tautology_ratio * 100, "1.0-1"), "%");
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate1("", ctx_r4.cdiPts(res_r2).t_pts, " / 25 pts");
+    \u0275\u0275advance(17);
+    \u0275\u0275textInterpolate1("", res_r2.payload.decisions.length, " Silent Assumptions Flagged");
+    \u0275\u0275advance(4);
+    \u0275\u0275repeater(res_r2.payload.decisions);
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(31, _c1, res_r2.verdict == null ? null : res_r2.verdict.approved));
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate((res_r2.verdict == null ? null : res_r2.verdict.approved) ? "lock_open" : "lock");
+    \u0275\u0275advance(3);
+    \u0275\u0275property("ngClass", (res_r2.verdict == null ? null : res_r2.verdict.approved) ? "badge-ok" : "badge-blocked");
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", (res_r2.verdict == null ? null : res_r2.verdict.approved) ? "GATE UNLOCKED" : res_r2.telemetry.gate_blocked ? "GATE BLOCKED" : "OPTIONAL EXPLANATION", " ");
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate1(' "', res_r2.payload.socratic_question, '" ');
+    \u0275\u0275advance(23);
+    \u0275\u0275twoWayProperty("ngModel", ctx_r4.authorReply);
+    \u0275\u0275advance(2);
+    \u0275\u0275property("disabled", ctx_r4.isExplaining() || !ctx_r4.authorReply.trim());
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r4.isExplaining() ? 129 : 130);
+    \u0275\u0275advance(2);
+    \u0275\u0275conditional(res_r2.verdict ? 131 : -1);
+    \u0275\u0275advance(12);
+    \u0275\u0275textInterpolate(ctx_r4.copied() ? "Copied!" : "Copy Markdown");
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(res_r2.comment_markdown);
+  }
+}
+var CognitiveDebtComponent = class _CognitiveDebtComponent {
+  debtService = inject2(CognitiveDebtService);
+  diffText = "";
+  prBody = "";
+  authorReply = "";
+  isAnalyzing = signal(false, ...ngDevMode ? [{ debugName: "isAnalyzing" }] : []);
+  isExplaining = signal(false, ...ngDevMode ? [{ debugName: "isExplaining" }] : []);
+  analysis = signal(null, ...ngDevMode ? [{ debugName: "analysis" }] : []);
+  copied = signal(false, ...ngDevMode ? [{ debugName: "copied" }] : []);
+  samples = signal(null, ...ngDevMode ? [{ debugName: "samples" }] : []);
+  bodyWordCount = computed(() => {
+    const text = this.prBody.trim();
+    return text ? text.split(/\s+/).length : 0;
+  }, ...ngDevMode ? [{ debugName: "bodyWordCount" }] : []);
+  ngOnInit() {
+    this.debtService.getSamples().subscribe({
+      next: (data) => {
+        this.samples.set(data);
+        this.loadPreset("bad");
+      },
+      error: (err) => console.warn("Could not load PR samples:", err)
+    });
+  }
+  loadPreset(type) {
+    const s = this.samples();
+    if (!s)
+      return;
+    if (type === "bad") {
+      this.diffText = s.bad_pr.diff_text;
+      this.prBody = s.bad_pr.pr_body;
+      this.authorReply = "";
+    } else {
+      this.diffText = s.clean_pr.diff_text;
+      this.prBody = s.clean_pr.pr_body;
+      this.authorReply = "";
+    }
+    this.analysis.set(null);
+  }
+  resetForm() {
+    this.diffText = "";
+    this.prBody = "";
+    this.authorReply = "";
+    this.analysis.set(null);
+  }
+  runAnalysis() {
+    if (!this.diffText.trim())
+      return;
+    this.isAnalyzing.set(true);
+    this.debtService.analyze(this.diffText, this.prBody).subscribe({
+      next: (res) => {
+        this.analysis.set(res);
+        this.isAnalyzing.set(false);
+      },
+      error: (err) => {
+        console.error("Analysis failed:", err);
+        this.isAnalyzing.set(false);
+        alert("Failed to analyze diff: " + (err.error?.detail || err.message));
+      }
+    });
+  }
+  setQuickReply(type) {
+    if (type === "handwavy") {
+      this.authorReply = "/explain AI wrote it, looks fine to me, please just approve.";
+    } else {
+      this.authorReply = "/explain To ensure transaction atomicity and prevent duplicate charges on restart, each transaction carries an idempotent UUID passed to the gateway charge() call. The gateway deduplicates identical transaction IDs on its side. The in-memory cache is purely an ephemeral read cache to avoid re-querying active orders, so a process crash safely re-reads the relational DB state on restart without duplicate charges.";
+    }
+  }
+  submitExplanation() {
+    const res = this.analysis();
+    if (!res || !this.authorReply.trim())
+      return;
+    this.isExplaining.set(true);
+    this.debtService.explain(this.diffText, res.payload.socratic_question, this.authorReply, res.telemetry, res.payload).subscribe({
+      next: (updated) => {
+        this.analysis.set(updated);
+        this.isExplaining.set(false);
+      },
+      error: (err) => {
+        console.error("Explanation evaluation failed:", err);
+        this.isExplaining.set(false);
+        alert("Failed to evaluate explanation: " + (err.error?.detail || err.message));
+      }
+    });
+  }
+  copyComment() {
+    const res = this.analysis();
+    if (!res)
+      return;
+    navigator.clipboard.writeText(res.comment_markdown).then(() => {
+      this.copied.set(true);
+      setTimeout(() => this.copied.set(false), 2e3);
+    });
+  }
+  cdiPts(res) {
+    const effLoc = this.bodyWordCount() < 30 ? Math.floor(res.telemetry.net_new_logic_loc * 1.5) : res.telemetry.net_new_logic_loc;
+    return {
+      c_pts: Math.min(40, res.telemetry.max_nesting_score * 2),
+      l_pts: Math.min(35, Math.floor(effLoc / 300 * 35)),
+      t_pts: Math.floor(res.telemetry.mock_tautology_ratio * 25)
+    };
+  }
+  gateStatusClass() {
+    const res = this.analysis();
+    if (!res)
+      return "";
+    if (res.verdict?.approved)
+      return "gate-unlocked";
+    return res.telemetry.gate_blocked ? "gate-blocked" : "gate-unlocked";
+  }
+  gateStatusIcon() {
+    const res = this.analysis();
+    if (!res)
+      return "help";
+    if (res.verdict?.approved)
+      return "verified";
+    return res.telemetry.gate_blocked ? "lock" : "verified";
+  }
+  gateStatusTitle() {
+    const res = this.analysis();
+    if (!res)
+      return "";
+    if (res.verdict?.approved)
+      return "GATE UNLOCKED (APPROVED)";
+    return res.telemetry.gate_blocked ? "GATE BLOCKED (HIGH DEBT)" : "GATE PASSED (LOW DEBT)";
+  }
+  gateStatusMessage() {
+    const res = this.analysis();
+    if (!res)
+      return "";
+    if (res.verdict?.approved) {
+      return "Author rationale accepted by LLM Judge. The PR status check transitioned from BLOCKED to SUCCESS.";
+    }
+    if (res.telemetry.gate_blocked) {
+      return "Cognitive Debt Index (CDI) exceeds the safety threshold of 65. The developer must answer the Socratic question below to unlock this PR.";
+    }
+    return "PR is within safe cognitive debt boundaries with low control-flow complexity and valid tests.";
+  }
+  static \u0275fac = function CognitiveDebtComponent_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _CognitiveDebtComponent)();
+  };
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _CognitiveDebtComponent, selectors: [["app-cognitive-debt"]], decls: 56, vars: 11, consts: [[1, "page", "cognitive-page"], [1, "eyebrow"], [1, "cognitive-header"], [1, "preset-actions"], ["type", "button", 1, "preset-btn", "bad", 3, "click"], [1, "material-symbols-outlined"], ["type", "button", 1, "preset-btn", "clean", 3, "click"], ["type", "button", 1, "preset-btn", "reset", 3, "click"], [1, "card", "input-card"], [1, "card-header"], [1, "card-title"], [1, "badge", 3, "ngClass"], [1, "input-grid"], [1, "field-group"], ["for", "diffText"], ["id", "diffText", "rows", "10", "placeholder", "Paste unified git diff (diff --git a/... b/...) or modified python lines...", 1, "code-textarea", 3, "ngModelChange", "ngModel"], ["for", "prBody"], ["id", "prBody", "rows", "3", "placeholder", "Provide the pull request context and rationale...", 1, "desc-textarea", 3, "ngModelChange", "ngModel"], [1, "card-actions"], ["type", "button", 1, "primary-btn", 3, "click", "disabled"], [1, "results-container"], [1, "spinner"], [1, "gate-hero-card", 3, "ngClass"], [1, "hero-metric-box"], [1, "hero-label"], [1, "hero-score"], [1, "score-bar-bg"], [1, "score-bar-fill"], [1, "hero-status-box"], [1, "gate-status-pill", 3, "ngClass"], [1, "hero-description"], [1, "status-transition"], [1, "metrics-grid"], [1, "metric-card"], [1, "metric-header"], [1, "material-symbols-outlined", "metric-icon"], [1, "metric-name"], [1, "metric-val-row"], [1, "metric-big-val"], [1, "metric-pts"], [1, "metric-desc"], [1, "card", "decisions-card"], [1, "badge", "badge-purple"], [1, "section-lead"], [1, "decisions-list"], [1, "decision-item"], [1, "card", "socratic-card", 3, "ngClass"], [1, "question-callout"], [1, "question-kicker"], [1, "question-text"], [1, "question-sub"], [1, "explain-form"], ["for", "explainReply"], [1, "quick-reply-row"], ["type", "button", 1, "quick-reply-btn", "reject-demo", 3, "click"], ["type", "button", 1, "quick-reply-btn", "approve-demo", 3, "click"], ["id", "explainReply", "rows", "3", "placeholder", "/explain <describe concurrency safety, idempotency, or architectural mitigations>...", 1, "explain-textarea", 3, "ngModelChange", "ngModel"], [1, "explain-actions"], [1, "verdict-banner", 3, "ngClass"], [1, "card", "preview-card"], ["type", "button", 1, "copy-btn", 3, "click"], [1, "comment-preview"], [1, "old-status"], [1, "new-status"], [1, "decision-head"], [1, "decision-num"], [1, "decision-title"], [1, "file-badge"], [1, "decision-body"], [1, "assumption-box"], [1, "box-lbl"], [1, "risk-box"], [1, "verdict-head"], [1, "verdict-feedback"], [1, "status-summary"]], template: function CognitiveDebtComponent_Template(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275elementStart(0, "section", 0)(1, "div", 1);
+      \u0275\u0275text(2, "AGENTIC PR GOVERNANCE ");
+      \u0275\u0275element(3, "span");
+      \u0275\u0275text(4, " ZERO-INFRASTRUCTURE GATE");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(5, "div", 2)(6, "div")(7, "h1");
+      \u0275\u0275text(8, "Cognitive Debt PR Gate");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(9, "p");
+      \u0275\u0275text(10, "Surfaces silent AI architectural assumptions and blocks unreviewed AI code bursts using native AST telemetry & Socratic gates.");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(11, "div", 3)(12, "button", 4);
+      \u0275\u0275listener("click", function CognitiveDebtComponent_Template_button_click_12_listener() {
+        return ctx.loadPreset("bad");
+      });
+      \u0275\u0275elementStart(13, "i", 5);
+      \u0275\u0275text(14, "warning");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(15, "span");
+      \u0275\u0275text(16, "Load Bad Agentic PR");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(17, "button", 6);
+      \u0275\u0275listener("click", function CognitiveDebtComponent_Template_button_click_17_listener() {
+        return ctx.loadPreset("clean");
+      });
+      \u0275\u0275elementStart(18, "i", 5);
+      \u0275\u0275text(19, "verified");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(20, "span");
+      \u0275\u0275text(21, "Load Clean PR");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(22, "button", 7);
+      \u0275\u0275listener("click", function CognitiveDebtComponent_Template_button_click_22_listener() {
+        return ctx.resetForm();
+      });
+      \u0275\u0275elementStart(23, "i", 5);
+      \u0275\u0275text(24, "restart_alt");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(25, "span");
+      \u0275\u0275text(26, "Reset");
+      \u0275\u0275elementEnd()()()();
+      \u0275\u0275elementStart(27, "div", 8)(28, "div", 9)(29, "div", 10)(30, "i", 5);
+      \u0275\u0275text(31, "difference");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(32, "strong");
+      \u0275\u0275text(33, "Pull Request Diff & Context");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(34, "span", 11);
+      \u0275\u0275text(35);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(36, "div", 12)(37, "div", 13)(38, "label", 14)(39, "span");
+      \u0275\u0275text(40, "Unified Diff (or Python Source)");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(41, "small");
+      \u0275\u0275text(42, "Native AST calculates control-flow nesting depth and mock tautology");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(43, "textarea", 15);
+      \u0275\u0275twoWayListener("ngModelChange", function CognitiveDebtComponent_Template_textarea_ngModelChange_43_listener($event) {
+        \u0275\u0275twoWayBindingSet(ctx.diffText, $event) || (ctx.diffText = $event);
+        return $event;
+      });
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(44, "div", 13)(45, "label", 16)(46, "span");
+      \u0275\u0275text(47, "PR Description / Human Intent");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(48, "small");
+      \u0275\u0275text(49, "PRs with fewer than 30 words trigger a 1.5x unreviewed logic burst penalty");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(50, "textarea", 17);
+      \u0275\u0275twoWayListener("ngModelChange", function CognitiveDebtComponent_Template_textarea_ngModelChange_50_listener($event) {
+        \u0275\u0275twoWayBindingSet(ctx.prBody, $event) || (ctx.prBody = $event);
+        return $event;
+      });
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(51, "div", 18)(52, "button", 19);
+      \u0275\u0275listener("click", function CognitiveDebtComponent_Template_button_click_52_listener() {
+        return ctx.runAnalysis();
+      });
+      \u0275\u0275conditionalCreate(53, CognitiveDebtComponent_Conditional_53_Template, 3, 0)(54, CognitiveDebtComponent_Conditional_54_Template, 4, 0);
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275conditionalCreate(55, CognitiveDebtComponent_Conditional_55_Template, 147, 33, "div", 20);
+      \u0275\u0275elementEnd();
+    }
+    if (rf & 2) {
+      let tmp_6_0;
+      \u0275\u0275advance(34);
+      \u0275\u0275property("ngClass", \u0275\u0275pureFunction2(8, _c03, ctx.bodyWordCount() < 30, ctx.bodyWordCount() >= 30));
+      \u0275\u0275advance();
+      \u0275\u0275textInterpolate2(" PR Description: ", ctx.bodyWordCount(), " words ", ctx.bodyWordCount() < 30 ? "(1.5x AI penalty)" : "(Pass)", " ");
+      \u0275\u0275advance(8);
+      \u0275\u0275twoWayProperty("ngModel", ctx.diffText);
+      \u0275\u0275advance(7);
+      \u0275\u0275twoWayProperty("ngModel", ctx.prBody);
+      \u0275\u0275advance(2);
+      \u0275\u0275property("disabled", ctx.isAnalyzing() || !ctx.diffText.trim());
+      \u0275\u0275advance();
+      \u0275\u0275conditional(ctx.isAnalyzing() ? 53 : 54);
+      \u0275\u0275advance(2);
+      \u0275\u0275conditional((tmp_6_0 = ctx.analysis()) ? 55 : -1, tmp_6_0);
+    }
+  }, dependencies: [CommonModule, NgClass, FormsModule, DefaultValueAccessor, NgControlStatus, NgModel, DecimalPipe], styles: ['\n\n.cognitive-page[_ngcontent-%COMP%] {\n  padding: 30px;\n  max-width: 1200px;\n  margin: 0 auto;\n}\n.cognitive-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-end;\n  margin: 20px 0 30px;\n  gap: 20px;\n  flex-wrap: wrap;\n}\n.cognitive-header[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: 42px;\n  letter-spacing: -2px;\n  margin: 0 0 8px;\n  color: var(--ink);\n}\n.cognitive-header[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  color: var(--muted);\n  font-size: 14px;\n  max-width: 650px;\n  margin: 0;\n  line-height: 1.5;\n}\n.preset-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 10px;\n  align-items: center;\n}\n.preset-btn[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 7px;\n  padding: 9px 15px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s;\n  border: 1px solid var(--line);\n  background: var(--card);\n  color: var(--ink);\n}\n.preset-btn.bad[_ngcontent-%COMP%] {\n  border-color: rgba(255, 93, 117, 0.4);\n  background: rgba(255, 93, 117, 0.08);\n  color: var(--coral);\n}\n.preset-btn.bad[_ngcontent-%COMP%]:hover {\n  background: rgba(255, 93, 117, 0.16);\n}\n.preset-btn.clean[_ngcontent-%COMP%] {\n  border-color: rgba(45, 226, 208, 0.4);\n  background: rgba(45, 226, 208, 0.08);\n  color: var(--teal);\n}\n.preset-btn.clean[_ngcontent-%COMP%]:hover {\n  background: rgba(45, 226, 208, 0.16);\n}\n.preset-btn.reset[_ngcontent-%COMP%]:hover {\n  background: #eee;\n}\n.card[_ngcontent-%COMP%] {\n  background: var(--card);\n  border: 1px solid var(--line);\n  border-radius: 8px;\n  padding: 22px;\n  margin-bottom: 24px;\n  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);\n}\n.card-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 18px;\n}\n.card-title[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 16px;\n  color: var(--ink);\n}\n.badge[_ngcontent-%COMP%] {\n  padding: 4px 10px;\n  border-radius: 12px;\n  font-size: 11px;\n  font-weight: 600;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.badge-warn[_ngcontent-%COMP%] {\n  background: rgba(255, 200, 87, 0.15);\n  color: #9a6b0d;\n  border: 1px solid rgba(255, 200, 87, 0.35);\n}\n.badge-ok[_ngcontent-%COMP%] {\n  background: rgba(45, 226, 208, 0.15);\n  color: var(--teal);\n  border: 1px solid rgba(45, 226, 208, 0.35);\n}\n.badge-blocked[_ngcontent-%COMP%] {\n  background: rgba(255, 93, 117, 0.15);\n  color: var(--coral);\n  border: 1px solid rgba(255, 93, 117, 0.35);\n}\n.badge-purple[_ngcontent-%COMP%] {\n  background: rgba(168, 85, 247, 0.15);\n  color: #9333ea;\n  border: 1px solid rgba(168, 85, 247, 0.35);\n}\n.input-grid[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n.field-group[_ngcontent-%COMP%]   label[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 7px;\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--ink);\n}\n.field-group[_ngcontent-%COMP%]   label[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  color: var(--muted);\n  font-weight: 400;\n  font-size: 11px;\n}\n.code-textarea[_ngcontent-%COMP%], \n.desc-textarea[_ngcontent-%COMP%], \n.explain-textarea[_ngcontent-%COMP%] {\n  width: 100%;\n  border: 1px solid var(--line);\n  border-radius: 6px;\n  padding: 12px;\n  font-size: 13px;\n  font-family: "Courier New", monospace;\n  line-height: 1.5;\n  background: #fafcfb;\n  color: var(--ink);\n  resize: vertical;\n  box-sizing: border-box;\n}\n.code-textarea[_ngcontent-%COMP%]:focus, \n.desc-textarea[_ngcontent-%COMP%]:focus, \n.explain-textarea[_ngcontent-%COMP%]:focus {\n  outline: none;\n  border-color: var(--teal);\n  box-shadow: 0 0 0 3px rgba(45, 226, 208, 0.15);\n}\n.card-actions[_ngcontent-%COMP%] {\n  margin-top: 18px;\n  display: flex;\n  justify-content: flex-end;\n}\n.gate-hero-card[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 280px 1fr;\n  gap: 24px;\n  padding: 24px;\n  border-radius: 8px;\n  margin-bottom: 24px;\n  border: 1px solid var(--line);\n}\n.gate-hero-card.gate-blocked[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      135deg,\n      rgba(255, 93, 117, 0.12),\n      rgba(255, 255, 255, 0.9));\n  border-color: rgba(255, 93, 117, 0.4);\n}\n.gate-hero-card.gate-unlocked[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      135deg,\n      rgba(45, 226, 208, 0.12),\n      rgba(255, 255, 255, 0.9));\n  border-color: rgba(45, 226, 208, 0.4);\n}\n.hero-metric-box[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n}\n.hero-label[_ngcontent-%COMP%] {\n  font-size: 10px;\n  font-family: "Courier New", monospace;\n  letter-spacing: 1px;\n  color: var(--muted);\n}\n.hero-score[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  font-size: 54px;\n  letter-spacing: -3px;\n  color: var(--ink);\n  line-height: 1;\n}\n.hero-score[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  font-size: 18px;\n  color: var(--muted);\n  margin-left: 4px;\n}\n.score-bar-bg[_ngcontent-%COMP%] {\n  height: 8px;\n  background: rgba(0, 0, 0, 0.06);\n  border-radius: 4px;\n  overflow: hidden;\n  margin-top: 10px;\n}\n.score-bar-fill[_ngcontent-%COMP%] {\n  height: 100%;\n  background: var(--coral);\n  transition: width 0.4s ease;\n}\n.gate-unlocked[_ngcontent-%COMP%]   .score-bar-fill[_ngcontent-%COMP%] {\n  background: var(--teal);\n}\n.hero-status-box[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n}\n.gate-status-pill[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  padding: 6px 14px;\n  border-radius: 20px;\n  font-size: 14px;\n  font-weight: 700;\n  width: fit-content;\n  margin-bottom: 10px;\n}\n.gate-status-pill.gate-blocked[_ngcontent-%COMP%] {\n  background: var(--coral);\n  color: #fff;\n}\n.gate-status-pill.gate-unlocked[_ngcontent-%COMP%] {\n  background: var(--teal);\n  color: #fff;\n}\n.hero-description[_ngcontent-%COMP%] {\n  color: var(--ink);\n  font-size: 14px;\n  line-height: 1.5;\n  margin: 0 0 10px;\n}\n.status-transition[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 13px;\n  font-weight: 600;\n  margin-top: 6px;\n}\n.old-status[_ngcontent-%COMP%] {\n  text-decoration: line-through;\n  color: var(--muted);\n}\n.new-status.unlocked[_ngcontent-%COMP%] {\n  color: var(--teal);\n  font-weight: 700;\n}\n.metrics-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 16px;\n  margin-bottom: 24px;\n}\n.metric-card[_ngcontent-%COMP%] {\n  background: var(--card);\n  border: 1px solid var(--line);\n  border-radius: 8px;\n  padding: 18px;\n  display: flex;\n  flex-direction: column;\n}\n.metric-header[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin-bottom: 12px;\n}\n.metric-icon[_ngcontent-%COMP%] {\n  font-size: 20px;\n  color: var(--teal);\n}\n.metric-name[_ngcontent-%COMP%] {\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--ink);\n}\n.metric-val-row[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: baseline;\n  margin-bottom: 10px;\n}\n.metric-big-val[_ngcontent-%COMP%] {\n  font-size: 32px;\n  letter-spacing: -1.5px;\n  color: var(--ink);\n}\n.metric-big-val[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  font-size: 13px;\n  color: var(--muted);\n}\n.metric-pts[_ngcontent-%COMP%] {\n  font-size: 12px;\n  font-weight: 700;\n  color: var(--coral);\n  font-family: "Courier New", monospace;\n}\n.metric-desc[_ngcontent-%COMP%] {\n  font-size: 11px;\n  color: var(--muted);\n  line-height: 1.4;\n  margin: 0;\n}\n.section-lead[_ngcontent-%COMP%] {\n  font-size: 13px;\n  color: var(--muted);\n  margin: 0 0 16px;\n}\n.decisions-list[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n.decision-item[_ngcontent-%COMP%] {\n  border: 1px solid var(--line);\n  border-radius: 6px;\n  padding: 14px 16px;\n  background: #fafcfb;\n}\n.decision-head[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  margin-bottom: 10px;\n  flex-wrap: wrap;\n}\n.decision-num[_ngcontent-%COMP%] {\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  background: #e0e8e4;\n  display: inline-grid;\n  place-items: center;\n  font-size: 11px;\n  font-weight: 700;\n  color: var(--ink);\n}\n.decision-title[_ngcontent-%COMP%] {\n  font-size: 14px;\n  color: var(--ink);\n}\n.file-badge[_ngcontent-%COMP%] {\n  font-size: 11px;\n  font-family: "Courier New", monospace;\n  color: var(--muted);\n  background: #eee;\n  padding: 2px 7px;\n  border-radius: 4px;\n}\n.decision-body[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 14px;\n}\n.assumption-box[_ngcontent-%COMP%], \n.risk-box[_ngcontent-%COMP%] {\n  padding: 10px 12px;\n  border-radius: 5px;\n  font-size: 12px;\n}\n.assumption-box[_ngcontent-%COMP%] {\n  background: rgba(106, 168, 255, 0.08);\n  border-left: 3px solid #6aa8ff;\n}\n.risk-box[_ngcontent-%COMP%] {\n  background: rgba(255, 93, 117, 0.08);\n  border-left: 3px solid var(--coral);\n}\n.box-lbl[_ngcontent-%COMP%] {\n  font-size: 10px;\n  font-family: "Courier New", monospace;\n  text-transform: uppercase;\n  font-weight: 700;\n  color: var(--muted);\n  display: block;\n  margin-bottom: 4px;\n}\n.assumption-box[_ngcontent-%COMP%]   p[_ngcontent-%COMP%], \n.risk-box[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 0;\n  line-height: 1.4;\n  color: var(--ink);\n}\n.socratic-card[_ngcontent-%COMP%] {\n  border-left: 4px solid var(--coral);\n}\n.socratic-card.card-unlocked[_ngcontent-%COMP%] {\n  border-left-color: var(--teal);\n}\n.question-callout[_ngcontent-%COMP%] {\n  background: #f5f8f7;\n  border: 1px solid var(--line);\n  border-radius: 6px;\n  padding: 16px 18px;\n  margin-bottom: 18px;\n}\n.question-kicker[_ngcontent-%COMP%] {\n  font-size: 11px;\n  font-family: "Courier New", monospace;\n  color: var(--coral);\n  font-weight: 700;\n  letter-spacing: 0.8px;\n  margin-bottom: 6px;\n}\n.question-text[_ngcontent-%COMP%] {\n  font-size: 16px;\n  font-weight: 600;\n  color: var(--ink);\n  margin: 0 0 8px;\n  line-height: 1.5;\n  font-style: italic;\n}\n.question-sub[_ngcontent-%COMP%] {\n  font-size: 12px;\n  color: var(--muted);\n}\n.quick-reply-row[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 10px;\n  margin: 10px 0 12px;\n  flex-wrap: wrap;\n}\n.quick-reply-btn[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  padding: 7px 12px;\n  font-size: 12px;\n  border-radius: 6px;\n  cursor: pointer;\n  border: 1px solid var(--line);\n  background: var(--card);\n}\n.quick-reply-btn.reject-demo[_ngcontent-%COMP%] {\n  color: var(--coral);\n  border-color: rgba(255, 93, 117, 0.3);\n}\n.quick-reply-btn.reject-demo[_ngcontent-%COMP%]:hover {\n  background: rgba(255, 93, 117, 0.08);\n}\n.quick-reply-btn.approve-demo[_ngcontent-%COMP%] {\n  color: var(--teal);\n  border-color: rgba(45, 226, 208, 0.3);\n}\n.quick-reply-btn.approve-demo[_ngcontent-%COMP%]:hover {\n  background: rgba(45, 226, 208, 0.08);\n}\n.explain-actions[_ngcontent-%COMP%] {\n  margin-top: 12px;\n  display: flex;\n  justify-content: flex-end;\n}\n.verdict-banner[_ngcontent-%COMP%] {\n  margin-top: 18px;\n  border-radius: 6px;\n  padding: 16px 18px;\n}\n.verdict-approved[_ngcontent-%COMP%] {\n  background: rgba(45, 226, 208, 0.1);\n  border: 1px solid rgba(45, 226, 208, 0.4);\n}\n.verdict-rejected[_ngcontent-%COMP%] {\n  background: rgba(255, 93, 117, 0.1);\n  border: 1px solid rgba(255, 93, 117, 0.4);\n}\n.verdict-head[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 15px;\n  margin-bottom: 6px;\n}\n.verdict-approved[_ngcontent-%COMP%]   .verdict-head[_ngcontent-%COMP%] {\n  color: var(--teal);\n}\n.verdict-rejected[_ngcontent-%COMP%]   .verdict-head[_ngcontent-%COMP%] {\n  color: var(--coral);\n}\n.verdict-feedback[_ngcontent-%COMP%] {\n  font-size: 13px;\n  line-height: 1.5;\n  color: var(--ink);\n  margin: 0 0 8px;\n}\n.status-summary[_ngcontent-%COMP%] {\n  font-size: 11px;\n  font-family: "Courier New", monospace;\n  color: var(--muted);\n}\n.status-summary[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: var(--ink);\n}\n.copy-btn[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  padding: 6px 12px;\n  font-size: 11px;\n  border-radius: 4px;\n  border: 1px solid var(--line);\n  background: var(--card);\n  cursor: pointer;\n  color: var(--muted);\n}\n.copy-btn[_ngcontent-%COMP%]:hover {\n  color: var(--ink);\n  background: #f0f0f0;\n}\n.comment-preview[_ngcontent-%COMP%] {\n  background: #0f1715;\n  color: #d1ded8;\n  padding: 16px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-family: "Courier New", monospace;\n  line-height: 1.5;\n  overflow-x: auto;\n  max-height: 400px;\n}\n.spinner[_ngcontent-%COMP%] {\n  display: inline-block;\n  width: 14px;\n  height: 14px;\n  border: 2px solid rgba(255, 255, 255, 0.3);\n  border-top-color: #fff;\n  border-radius: 50%;\n  animation: _ngcontent-%COMP%_spin 0.7s linear infinite;\n  margin-right: 6px;\n}\n@keyframes _ngcontent-%COMP%_spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n@media (max-width: 900px) {\n  .gate-hero-card[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .metrics-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .decision-body[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}'] });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(CognitiveDebtComponent, [{
+    type: Component,
+    args: [{ selector: "app-cognitive-debt", standalone: true, imports: [CommonModule, FormsModule], template: `
+    <section class="page cognitive-page">
+      <!-- Top Eyebrow & Hero Header -->
+      <div class="eyebrow">AGENTIC PR GOVERNANCE <span></span> ZERO-INFRASTRUCTURE GATE</div>
+      
+      <div class="cognitive-header">
+        <div>
+          <h1>Cognitive Debt PR Gate</h1>
+          <p>Surfaces silent AI architectural assumptions and blocks unreviewed AI code bursts using native AST telemetry & Socratic gates.</p>
+        </div>
+        <div class="preset-actions">
+          <button type="button" class="preset-btn bad" (click)="loadPreset('bad')">
+            <i class="material-symbols-outlined">warning</i>
+            <span>Load Bad Agentic PR</span>
+          </button>
+          <button type="button" class="preset-btn clean" (click)="loadPreset('clean')">
+            <i class="material-symbols-outlined">verified</i>
+            <span>Load Clean PR</span>
+          </button>
+          <button type="button" class="preset-btn reset" (click)="resetForm()">
+            <i class="material-symbols-outlined">restart_alt</i>
+            <span>Reset</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Input Configuration Form -->
+      <div class="card input-card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="material-symbols-outlined">difference</i>
+            <strong>Pull Request Diff & Context</strong>
+          </div>
+          <span class="badge" [ngClass]="{'badge-warn': bodyWordCount() < 30, 'badge-ok': bodyWordCount() >= 30}">
+            PR Description: {{ bodyWordCount() }} words {{ bodyWordCount() < 30 ? '(1.5x AI penalty)' : '(Pass)' }}
+          </span>
+        </div>
+
+        <div class="input-grid">
+          <div class="field-group">
+            <label for="diffText">
+              <span>Unified Diff (or Python Source)</span>
+              <small>Native AST calculates control-flow nesting depth and mock tautology</small>
+            </label>
+            <textarea
+              id="diffText"
+              rows="10"
+              class="code-textarea"
+              placeholder="Paste unified git diff (diff --git a/... b/...) or modified python lines..."
+              [(ngModel)]="diffText"
+            ></textarea>
+          </div>
+
+          <div class="field-group">
+            <label for="prBody">
+              <span>PR Description / Human Intent</span>
+              <small>PRs with fewer than 30 words trigger a 1.5x unreviewed logic burst penalty</small>
+            </label>
+            <textarea
+              id="prBody"
+              rows="3"
+              class="desc-textarea"
+              placeholder="Provide the pull request context and rationale..."
+              [(ngModel)]="prBody"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button
+            type="button"
+            class="primary-btn"
+            [disabled]="isAnalyzing() || !diffText.trim()"
+            (click)="runAnalysis()"
+          >
+            @if (isAnalyzing()) {
+              <span class="spinner"></span>
+              <span>Running AST Scorer & LLM Decision Extractor...</span>
+            } @else {
+              <i class="material-symbols-outlined">psychology</i>
+              <span>Analyze Cognitive Debt</span>
+            }
+          </button>
+        </div>
+      </div>
+
+      <!-- Analysis Results Dashboard -->
+      @if (analysis(); as res) {
+        <div class="results-container">
+          <!-- Gate Hero Banner -->
+          <div class="gate-hero-card" [ngClass]="gateStatusClass()">
+            <div class="hero-metric-box">
+              <span class="hero-label">COMPOSITE COGNITIVE DEBT INDEX</span>
+              <div class="hero-score">
+                <strong>{{ res.telemetry.cdi_score }}</strong>
+                <small>/ 100</small>
+              </div>
+              <div class="score-bar-bg">
+                <div class="score-bar-fill" [style.width.%]="res.telemetry.cdi_score"></div>
+              </div>
+            </div>
+
+            <div class="hero-status-box">
+              <div class="gate-status-pill" [ngClass]="gateStatusClass()">
+                <i class="material-symbols-outlined">{{ gateStatusIcon() }}</i>
+                <span>{{ gateStatusTitle() }}</span>
+              </div>
+              <p class="hero-description">{{ gateStatusMessage() }}</p>
+              @if (res.verdict) {
+                <div class="status-transition">
+                  <span class="old-status">\u{1F6A8} BLOCKED</span>
+                  <i class="material-symbols-outlined">arrow_forward</i>
+                  <span class="new-status" [class.unlocked]="res.verdict.approved">
+                    {{ res.verdict.approved ? '\u2705 UNLOCKED' : '\u{1F6A8} STILL BLOCKED' }}
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- 3 Core Metric Breakdown Cards -->
+          <div class="metrics-grid">
+            <!-- 1. AST Nesting Complexity -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <i class="material-symbols-outlined metric-icon">account_tree</i>
+                <span class="metric-name">AST Nesting Complexity</span>
+              </div>
+              <div class="metric-val-row">
+                <strong class="metric-big-val">{{ res.telemetry.max_nesting_score }}</strong>
+                <span class="metric-pts">{{ cdiPts(res).c_pts }} / 40 pts</span>
+              </div>
+              <p class="metric-desc">
+                Calculated via native <code>ast.walk()</code>: +1 for control nodes, +2 penalty for each nesting depth level &gt; 2.
+              </p>
+            </div>
+
+            <!-- 2. Undocumented Logic Burst -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <i class="material-symbols-outlined metric-icon">history_edu</i>
+                <span class="metric-name">Undocumented Logic Burst</span>
+              </div>
+              <div class="metric-val-row">
+                <strong class="metric-big-val">{{ res.telemetry.net_new_logic_loc }} <small>LOC</small></strong>
+                <span class="metric-pts">{{ cdiPts(res).l_pts }} / 35 pts</span>
+              </div>
+              <p class="metric-desc">
+                Added executable lines. Multiplier: <strong>{{ bodyWordCount() < 30 ? '1.5x (Body < 30 words)' : '1.0x (Described)' }}</strong>.
+              </p>
+            </div>
+
+            <!-- 3. Test Tautology -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <i class="material-symbols-outlined metric-icon">quiz</i>
+                <span class="metric-name">Test Tautology (Mock Ratio)</span>
+              </div>
+              <div class="metric-val-row">
+                <strong class="metric-big-val">{{ (res.telemetry.mock_tautology_ratio * 100) | number:'1.0-1' }}%</strong>
+                <span class="metric-pts">{{ cdiPts(res).t_pts }} / 25 pts</span>
+              </div>
+              <p class="metric-desc">
+                Ratio of tautological <code>assert_called*</code> mock invocations vs verified output <code>ast.Assert</code> statements.
+              </p>
+            </div>
+          </div>
+
+          <!-- Section: Implicit Decisions Made by Coding Agent -->
+          <div class="card decisions-card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="material-symbols-outlined">smart_toy</i>
+                <strong>\u{1F9E0} What Your Coding Agent Decided For You</strong>
+              </div>
+              <span class="badge badge-purple">{{ res.payload.decisions.length }} Silent Assumptions Flagged</span>
+            </div>
+
+            <p class="section-lead">
+              The AI coding agent implemented these critical architectural decisions without documentation in the PR description:
+            </p>
+
+            <div class="decisions-list">
+              @for (dec of res.payload.decisions; track $index) {
+                <div class="decision-item">
+                  <div class="decision-head">
+                    <span class="decision-num">#{{ $index + 1 }}</span>
+                    <strong class="decision-title">{{ dec.title }}</strong>
+                    <span class="file-badge">{{ dec.file_and_line }}</span>
+                  </div>
+                  <div class="decision-body">
+                    <div class="assumption-box">
+                      <span class="box-lbl">Hidden Assumption</span>
+                      <p>{{ dec.hidden_assumption }}</p>
+                    </div>
+                    <div class="risk-box">
+                      <span class="box-lbl">Production Failure Risk</span>
+                      <p>{{ dec.production_risk }}</p>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Section: Socratic Gate Question & /explain Reply -->
+          <div class="card socratic-card" [ngClass]="{'card-unlocked': res.verdict?.approved}">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="material-symbols-outlined">{{ res.verdict?.approved ? 'lock_open' : 'lock' }}</i>
+                <strong>\u{1F510} Socratic Gatekeeper Challenge</strong>
+              </div>
+              <span class="badge" [ngClass]="res.verdict?.approved ? 'badge-ok' : 'badge-blocked'">
+                {{ res.verdict?.approved ? 'GATE UNLOCKED' : (res.telemetry.gate_blocked ? 'GATE BLOCKED' : 'OPTIONAL EXPLANATION') }}
+              </span>
+            </div>
+
+            <div class="question-callout">
+              <div class="question-kicker">CHALLENGE QUESTION FOR THE AUTHOR:</div>
+              <blockquote class="question-text">
+                "{{ res.payload.socratic_question }}"
+              </blockquote>
+              <div class="question-sub">
+                To unlock this pull request, the developer must justify the design tradeoff by replying with <code>/explain &lt;your rationale&gt;</code>.
+              </div>
+            </div>
+
+            <!-- Explain Reply Box -->
+            <div class="explain-form">
+              <label for="explainReply">
+                <strong>Author Reply:</strong>
+                <small>Enter your technical rationale below or click a quick-demo button</small>
+              </label>
+              
+              <div class="quick-reply-row">
+                <button
+                  type="button"
+                  class="quick-reply-btn reject-demo"
+                  (click)="setQuickReply('handwavy')"
+                >
+                  <i class="material-symbols-outlined">cancel</i>
+                  <span>Test Hand-Wavy Reply (Rejected)</span>
+                </button>
+                <button
+                  type="button"
+                  class="quick-reply-btn approve-demo"
+                  (click)="setQuickReply('solid')"
+                >
+                  <i class="material-symbols-outlined">check_circle</i>
+                  <span>Test Architectural Reply (Unlocked)</span>
+                </button>
+              </div>
+
+              <textarea
+                id="explainReply"
+                rows="3"
+                class="explain-textarea"
+                placeholder="/explain <describe concurrency safety, idempotency, or architectural mitigations>..."
+                [(ngModel)]="authorReply"
+              ></textarea>
+
+              <div class="explain-actions">
+                <button
+                  type="button"
+                  class="primary-btn"
+                  [disabled]="isExplaining() || !authorReply.trim()"
+                  (click)="submitExplanation()"
+                >
+                  @if (isExplaining()) {
+                    <span class="spinner"></span>
+                    <span>Evaluating with LLM Gate Judge...</span>
+                  } @else {
+                    <i class="material-symbols-outlined">gavel</i>
+                    <span>Submit /explain to Judge</span>
+                  }
+                </button>
+              </div>
+            </div>
+
+            <!-- Verdict Card Display -->
+            @if (res.verdict) {
+              <div class="verdict-banner" [ngClass]="res.verdict.approved ? 'verdict-approved' : 'verdict-rejected'">
+                <div class="verdict-head">
+                  <i class="material-symbols-outlined">
+                    {{ res.verdict.approved ? 'verified' : 'error' }}
+                  </i>
+                  <strong>
+                    {{ res.verdict.approved ? 'PR Gate Unlocked: Author Rationale Accepted' : 'PR Gate Blocked: Explanation Rejected' }}
+                  </strong>
+                </div>
+                <p class="verdict-feedback">{{ res.verdict.feedback }}</p>
+                <div class="status-summary">
+                  GitHub PR Status Check: 
+                  <strong>{{ res.verdict.approved ? 'SUCCESS (Exit Code 0)' : 'FAILURE (Exit Code 1)' }}</strong>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Section: GitHub PR Comment Markdown Preview -->
+          <div class="card preview-card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="material-symbols-outlined">markdown</i>
+                <strong>GitHub PR Comment Preview (Stateless Tag Embedded)</strong>
+              </div>
+              <button type="button" class="copy-btn" (click)="copyComment()">
+                <i class="material-symbols-outlined">content_copy</i>
+                <span>{{ copied() ? 'Copied!' : 'Copy Markdown' }}</span>
+              </button>
+            </div>
+            <pre class="comment-preview"><code>{{ res.comment_markdown }}</code></pre>
+          </div>
+        </div>
+      }
+    </section>
+  `, styles: ['/* angular:styles/component:css;e4906ed7a9d7b64e82ba41d59221fcd2dba50d9ca2f22aaec28e9522f929f2cd;C:/Coding_learning/pyengineer_ang/PyReviewAngular/src/app/cognitive-debt.component.ts */\n.cognitive-page {\n  padding: 30px;\n  max-width: 1200px;\n  margin: 0 auto;\n}\n.cognitive-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-end;\n  margin: 20px 0 30px;\n  gap: 20px;\n  flex-wrap: wrap;\n}\n.cognitive-header h1 {\n  font-size: 42px;\n  letter-spacing: -2px;\n  margin: 0 0 8px;\n  color: var(--ink);\n}\n.cognitive-header p {\n  color: var(--muted);\n  font-size: 14px;\n  max-width: 650px;\n  margin: 0;\n  line-height: 1.5;\n}\n.preset-actions {\n  display: flex;\n  gap: 10px;\n  align-items: center;\n}\n.preset-btn {\n  display: inline-flex;\n  align-items: center;\n  gap: 7px;\n  padding: 9px 15px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s;\n  border: 1px solid var(--line);\n  background: var(--card);\n  color: var(--ink);\n}\n.preset-btn.bad {\n  border-color: rgba(255, 93, 117, 0.4);\n  background: rgba(255, 93, 117, 0.08);\n  color: var(--coral);\n}\n.preset-btn.bad:hover {\n  background: rgba(255, 93, 117, 0.16);\n}\n.preset-btn.clean {\n  border-color: rgba(45, 226, 208, 0.4);\n  background: rgba(45, 226, 208, 0.08);\n  color: var(--teal);\n}\n.preset-btn.clean:hover {\n  background: rgba(45, 226, 208, 0.16);\n}\n.preset-btn.reset:hover {\n  background: #eee;\n}\n.card {\n  background: var(--card);\n  border: 1px solid var(--line);\n  border-radius: 8px;\n  padding: 22px;\n  margin-bottom: 24px;\n  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);\n}\n.card-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 18px;\n}\n.card-title {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 16px;\n  color: var(--ink);\n}\n.badge {\n  padding: 4px 10px;\n  border-radius: 12px;\n  font-size: 11px;\n  font-weight: 600;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n.badge-warn {\n  background: rgba(255, 200, 87, 0.15);\n  color: #9a6b0d;\n  border: 1px solid rgba(255, 200, 87, 0.35);\n}\n.badge-ok {\n  background: rgba(45, 226, 208, 0.15);\n  color: var(--teal);\n  border: 1px solid rgba(45, 226, 208, 0.35);\n}\n.badge-blocked {\n  background: rgba(255, 93, 117, 0.15);\n  color: var(--coral);\n  border: 1px solid rgba(255, 93, 117, 0.35);\n}\n.badge-purple {\n  background: rgba(168, 85, 247, 0.15);\n  color: #9333ea;\n  border: 1px solid rgba(168, 85, 247, 0.35);\n}\n.input-grid {\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n.field-group label {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 7px;\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--ink);\n}\n.field-group label small {\n  color: var(--muted);\n  font-weight: 400;\n  font-size: 11px;\n}\n.code-textarea,\n.desc-textarea,\n.explain-textarea {\n  width: 100%;\n  border: 1px solid var(--line);\n  border-radius: 6px;\n  padding: 12px;\n  font-size: 13px;\n  font-family: "Courier New", monospace;\n  line-height: 1.5;\n  background: #fafcfb;\n  color: var(--ink);\n  resize: vertical;\n  box-sizing: border-box;\n}\n.code-textarea:focus,\n.desc-textarea:focus,\n.explain-textarea:focus {\n  outline: none;\n  border-color: var(--teal);\n  box-shadow: 0 0 0 3px rgba(45, 226, 208, 0.15);\n}\n.card-actions {\n  margin-top: 18px;\n  display: flex;\n  justify-content: flex-end;\n}\n.gate-hero-card {\n  display: grid;\n  grid-template-columns: 280px 1fr;\n  gap: 24px;\n  padding: 24px;\n  border-radius: 8px;\n  margin-bottom: 24px;\n  border: 1px solid var(--line);\n}\n.gate-hero-card.gate-blocked {\n  background:\n    linear-gradient(\n      135deg,\n      rgba(255, 93, 117, 0.12),\n      rgba(255, 255, 255, 0.9));\n  border-color: rgba(255, 93, 117, 0.4);\n}\n.gate-hero-card.gate-unlocked {\n  background:\n    linear-gradient(\n      135deg,\n      rgba(45, 226, 208, 0.12),\n      rgba(255, 255, 255, 0.9));\n  border-color: rgba(45, 226, 208, 0.4);\n}\n.hero-metric-box {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n}\n.hero-label {\n  font-size: 10px;\n  font-family: "Courier New", monospace;\n  letter-spacing: 1px;\n  color: var(--muted);\n}\n.hero-score strong {\n  font-size: 54px;\n  letter-spacing: -3px;\n  color: var(--ink);\n  line-height: 1;\n}\n.hero-score small {\n  font-size: 18px;\n  color: var(--muted);\n  margin-left: 4px;\n}\n.score-bar-bg {\n  height: 8px;\n  background: rgba(0, 0, 0, 0.06);\n  border-radius: 4px;\n  overflow: hidden;\n  margin-top: 10px;\n}\n.score-bar-fill {\n  height: 100%;\n  background: var(--coral);\n  transition: width 0.4s ease;\n}\n.gate-unlocked .score-bar-fill {\n  background: var(--teal);\n}\n.hero-status-box {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n}\n.gate-status-pill {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  padding: 6px 14px;\n  border-radius: 20px;\n  font-size: 14px;\n  font-weight: 700;\n  width: fit-content;\n  margin-bottom: 10px;\n}\n.gate-status-pill.gate-blocked {\n  background: var(--coral);\n  color: #fff;\n}\n.gate-status-pill.gate-unlocked {\n  background: var(--teal);\n  color: #fff;\n}\n.hero-description {\n  color: var(--ink);\n  font-size: 14px;\n  line-height: 1.5;\n  margin: 0 0 10px;\n}\n.status-transition {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 13px;\n  font-weight: 600;\n  margin-top: 6px;\n}\n.old-status {\n  text-decoration: line-through;\n  color: var(--muted);\n}\n.new-status.unlocked {\n  color: var(--teal);\n  font-weight: 700;\n}\n.metrics-grid {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 16px;\n  margin-bottom: 24px;\n}\n.metric-card {\n  background: var(--card);\n  border: 1px solid var(--line);\n  border-radius: 8px;\n  padding: 18px;\n  display: flex;\n  flex-direction: column;\n}\n.metric-header {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin-bottom: 12px;\n}\n.metric-icon {\n  font-size: 20px;\n  color: var(--teal);\n}\n.metric-name {\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--ink);\n}\n.metric-val-row {\n  display: flex;\n  justify-content: space-between;\n  align-items: baseline;\n  margin-bottom: 10px;\n}\n.metric-big-val {\n  font-size: 32px;\n  letter-spacing: -1.5px;\n  color: var(--ink);\n}\n.metric-big-val small {\n  font-size: 13px;\n  color: var(--muted);\n}\n.metric-pts {\n  font-size: 12px;\n  font-weight: 700;\n  color: var(--coral);\n  font-family: "Courier New", monospace;\n}\n.metric-desc {\n  font-size: 11px;\n  color: var(--muted);\n  line-height: 1.4;\n  margin: 0;\n}\n.section-lead {\n  font-size: 13px;\n  color: var(--muted);\n  margin: 0 0 16px;\n}\n.decisions-list {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n.decision-item {\n  border: 1px solid var(--line);\n  border-radius: 6px;\n  padding: 14px 16px;\n  background: #fafcfb;\n}\n.decision-head {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  margin-bottom: 10px;\n  flex-wrap: wrap;\n}\n.decision-num {\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  background: #e0e8e4;\n  display: inline-grid;\n  place-items: center;\n  font-size: 11px;\n  font-weight: 700;\n  color: var(--ink);\n}\n.decision-title {\n  font-size: 14px;\n  color: var(--ink);\n}\n.file-badge {\n  font-size: 11px;\n  font-family: "Courier New", monospace;\n  color: var(--muted);\n  background: #eee;\n  padding: 2px 7px;\n  border-radius: 4px;\n}\n.decision-body {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 14px;\n}\n.assumption-box,\n.risk-box {\n  padding: 10px 12px;\n  border-radius: 5px;\n  font-size: 12px;\n}\n.assumption-box {\n  background: rgba(106, 168, 255, 0.08);\n  border-left: 3px solid #6aa8ff;\n}\n.risk-box {\n  background: rgba(255, 93, 117, 0.08);\n  border-left: 3px solid var(--coral);\n}\n.box-lbl {\n  font-size: 10px;\n  font-family: "Courier New", monospace;\n  text-transform: uppercase;\n  font-weight: 700;\n  color: var(--muted);\n  display: block;\n  margin-bottom: 4px;\n}\n.assumption-box p,\n.risk-box p {\n  margin: 0;\n  line-height: 1.4;\n  color: var(--ink);\n}\n.socratic-card {\n  border-left: 4px solid var(--coral);\n}\n.socratic-card.card-unlocked {\n  border-left-color: var(--teal);\n}\n.question-callout {\n  background: #f5f8f7;\n  border: 1px solid var(--line);\n  border-radius: 6px;\n  padding: 16px 18px;\n  margin-bottom: 18px;\n}\n.question-kicker {\n  font-size: 11px;\n  font-family: "Courier New", monospace;\n  color: var(--coral);\n  font-weight: 700;\n  letter-spacing: 0.8px;\n  margin-bottom: 6px;\n}\n.question-text {\n  font-size: 16px;\n  font-weight: 600;\n  color: var(--ink);\n  margin: 0 0 8px;\n  line-height: 1.5;\n  font-style: italic;\n}\n.question-sub {\n  font-size: 12px;\n  color: var(--muted);\n}\n.quick-reply-row {\n  display: flex;\n  gap: 10px;\n  margin: 10px 0 12px;\n  flex-wrap: wrap;\n}\n.quick-reply-btn {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  padding: 7px 12px;\n  font-size: 12px;\n  border-radius: 6px;\n  cursor: pointer;\n  border: 1px solid var(--line);\n  background: var(--card);\n}\n.quick-reply-btn.reject-demo {\n  color: var(--coral);\n  border-color: rgba(255, 93, 117, 0.3);\n}\n.quick-reply-btn.reject-demo:hover {\n  background: rgba(255, 93, 117, 0.08);\n}\n.quick-reply-btn.approve-demo {\n  color: var(--teal);\n  border-color: rgba(45, 226, 208, 0.3);\n}\n.quick-reply-btn.approve-demo:hover {\n  background: rgba(45, 226, 208, 0.08);\n}\n.explain-actions {\n  margin-top: 12px;\n  display: flex;\n  justify-content: flex-end;\n}\n.verdict-banner {\n  margin-top: 18px;\n  border-radius: 6px;\n  padding: 16px 18px;\n}\n.verdict-approved {\n  background: rgba(45, 226, 208, 0.1);\n  border: 1px solid rgba(45, 226, 208, 0.4);\n}\n.verdict-rejected {\n  background: rgba(255, 93, 117, 0.1);\n  border: 1px solid rgba(255, 93, 117, 0.4);\n}\n.verdict-head {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  font-size: 15px;\n  margin-bottom: 6px;\n}\n.verdict-approved .verdict-head {\n  color: var(--teal);\n}\n.verdict-rejected .verdict-head {\n  color: var(--coral);\n}\n.verdict-feedback {\n  font-size: 13px;\n  line-height: 1.5;\n  color: var(--ink);\n  margin: 0 0 8px;\n}\n.status-summary {\n  font-size: 11px;\n  font-family: "Courier New", monospace;\n  color: var(--muted);\n}\n.status-summary strong {\n  color: var(--ink);\n}\n.copy-btn {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  padding: 6px 12px;\n  font-size: 11px;\n  border-radius: 4px;\n  border: 1px solid var(--line);\n  background: var(--card);\n  cursor: pointer;\n  color: var(--muted);\n}\n.copy-btn:hover {\n  color: var(--ink);\n  background: #f0f0f0;\n}\n.comment-preview {\n  background: #0f1715;\n  color: #d1ded8;\n  padding: 16px;\n  border-radius: 6px;\n  font-size: 12px;\n  font-family: "Courier New", monospace;\n  line-height: 1.5;\n  overflow-x: auto;\n  max-height: 400px;\n}\n.spinner {\n  display: inline-block;\n  width: 14px;\n  height: 14px;\n  border: 2px solid rgba(255, 255, 255, 0.3);\n  border-top-color: #fff;\n  border-radius: 50%;\n  animation: spin 0.7s linear infinite;\n  margin-right: 6px;\n}\n@keyframes spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n@media (max-width: 900px) {\n  .gate-hero-card {\n    grid-template-columns: 1fr;\n  }\n  .metrics-grid {\n    grid-template-columns: 1fr;\n  }\n  .decision-body {\n    grid-template-columns: 1fr;\n  }\n}\n'] }]
+  }], null, null);
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CognitiveDebtComponent, { className: "CognitiveDebtComponent", filePath: "src/app/cognitive-debt.component.ts", lineNumber: 506 });
+})();
+
 // src/app/review.service.ts
 var ReviewService = class _ReviewService {
   http = inject2(HttpClient);
@@ -49381,8 +50380,8 @@ var ReviewService = class _ReviewService {
 })();
 
 // src/app/home.component.ts
-var _c03 = ["fileInput"];
-var _c1 = ["businessDocInput"];
+var _c04 = ["fileInput"];
+var _c12 = ["businessDocInput"];
 var _c2 = ["screenshotInput"];
 var _c3 = ["reviewStep"];
 var _forTrack0 = ($index, $item) => $item.id;
@@ -50198,8 +51197,8 @@ var HomeComponent = class _HomeComponent {
   };
   static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _HomeComponent, selectors: [["app-home"]], viewQuery: function HomeComponent_Query(rf, ctx) {
     if (rf & 1) {
-      \u0275\u0275viewQuery(_c03, 5);
-      \u0275\u0275viewQuery(_c1, 5);
+      \u0275\u0275viewQuery(_c04, 5);
+      \u0275\u0275viewQuery(_c12, 5);
       \u0275\u0275viewQuery(_c2, 5);
       \u0275\u0275viewQuery(_c3, 5);
     }
@@ -50543,8 +51542,8 @@ Example:
 })();
 
 // src/app/review.component.ts
-var _c04 = ["workflowLane"];
-var _c12 = () => [];
+var _c05 = ["workflowLane"];
+var _c13 = () => [];
 var _forTrack02 = ($index, $item) => $item.id;
 var _forTrack12 = ($index, $item) => $item.path;
 var _forTrack2 = ($index, $item) => $item.category;
@@ -51335,7 +52334,7 @@ function ReviewComponent_Conditional_0_Conditional_126_Template(rf, ctx) {
     \u0275\u0275advance(8);
     \u0275\u0275textInterpolate2("", (item_r2.businessDocuments == null ? null : item_r2.businessDocuments.length) ?? 0, " ", (item_r2.businessDocuments == null ? null : item_r2.businessDocuments.length) === 1 ? "reference" : "references", " attached");
     \u0275\u0275advance(2);
-    \u0275\u0275repeater(item_r2.businessDocuments ?? \u0275\u0275pureFunction0(2, _c12));
+    \u0275\u0275repeater(item_r2.businessDocuments ?? \u0275\u0275pureFunction0(2, _c13));
   }
 }
 function ReviewComponent_Conditional_0_Conditional_134_Template(rf, ctx) {
@@ -51580,7 +52579,7 @@ function ReviewComponent_Conditional_0_Template(rf, ctx) {
     \u0275\u0275advance(4);
     \u0275\u0275textInterpolate(item_r2.summary ?? "The review flagged a few high-priority issues that deserve attention before shipping.");
     \u0275\u0275advance(2);
-    \u0275\u0275repeater(item_r2.owaspContext ?? \u0275\u0275pureFunction0(39, _c12));
+    \u0275\u0275repeater(item_r2.owaspContext ?? \u0275\u0275pureFunction0(39, _c13));
     \u0275\u0275advance(2);
     \u0275\u0275conditional(item_r2.dependencyFlowDiagram ? 50 : -1);
     \u0275\u0275advance(11);
@@ -52003,7 +53002,7 @@ var ReviewComponent = class _ReviewComponent {
   };
   static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ReviewComponent, selectors: [["app-review"]], viewQuery: function ReviewComponent_Query(rf, ctx) {
     if (rf & 1) {
-      \u0275\u0275viewQuery(_c04, 5);
+      \u0275\u0275viewQuery(_c05, 5);
     }
     if (rf & 2) {
       let _t;
@@ -52289,7 +53288,7 @@ var ReviewComponent = class _ReviewComponent {
 })();
 
 // src/app/history.component.ts
-var _c05 = (a0) => ["/review", a0];
+var _c06 = (a0) => ["/review", a0];
 var _forTrack03 = ($index, $item) => $item.id;
 function HistoryComponent_For_107_Template(rf, ctx) {
   if (rf & 1) {
@@ -52385,7 +53384,7 @@ function HistoryComponent_For_122_Template(rf, ctx) {
   }
   if (rf & 2) {
     const item_r3 = ctx.$implicit;
-    \u0275\u0275property("routerLink", \u0275\u0275pureFunction1(16, _c05, item_r3.id));
+    \u0275\u0275property("routerLink", \u0275\u0275pureFunction1(16, _c06, item_r3.id));
     \u0275\u0275advance(6);
     \u0275\u0275textInterpolate(item_r3.name);
     \u0275\u0275advance(2);
@@ -54691,7 +55690,7 @@ var SourceComparisonComponent = class _SourceComparisonComponent {
 })();
 
 // src/app/scorecard/trajectory-logs.component.ts
-var _c06 = () => [];
+var _c07 = () => [];
 var _forTrack011 = ($index, $item) => $item.session_id;
 var _forTrack16 = ($index, $item) => $item.step;
 var _forTrack22 = ($index, $item) => $item.key;
@@ -54890,7 +55889,7 @@ function TrajectoryLogsComponent_For_5_Conditional_15_Conditional_3_Conditional_
   if (rf & 2) {
     const d_r5 = \u0275\u0275nextContext();
     \u0275\u0275advance(12);
-    \u0275\u0275repeater(d_r5.metric_results ?? \u0275\u0275pureFunction0(0, _c06));
+    \u0275\u0275repeater(d_r5.metric_results ?? \u0275\u0275pureFunction0(0, _c07));
   }
 }
 function TrajectoryLogsComponent_For_5_Conditional_15_Conditional_3_For_6_Template(rf, ctx) {
@@ -54944,7 +55943,7 @@ function TrajectoryLogsComponent_For_5_Conditional_15_Conditional_3_Template(rf,
     \u0275\u0275advance();
     \u0275\u0275conditional((d_r5.metric_results == null ? null : d_r5.metric_results.length) ? 4 : -1);
     \u0275\u0275advance();
-    \u0275\u0275repeater((d_r5.trajectory == null ? null : d_r5.trajectory.steps) ?? \u0275\u0275pureFunction0(5, _c06));
+    \u0275\u0275repeater((d_r5.trajectory == null ? null : d_r5.trajectory.steps) ?? \u0275\u0275pureFunction0(5, _c07));
   }
 }
 function TrajectoryLogsComponent_For_5_Conditional_15_Template(rf, ctx) {
@@ -57101,6 +58100,7 @@ var routes = [
   { path: "history", component: HistoryComponent },
   { path: "agent-lab", redirectTo: "scorecard", pathMatch: "full" },
   { path: "scorecard", component: ScorecardComponent },
+  { path: "cognitive-debt", component: CognitiveDebtComponent },
   { path: "**", redirectTo: "", pathMatch: "full" }
 ];
 
